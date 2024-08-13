@@ -2,6 +2,7 @@
 import React, { useState, useRef, FormEvent } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
@@ -13,8 +14,12 @@ const CanvasComponent: React.FC = () => {
   const [inputSketch, setInputSketch] = useState<string>("");
   const [isErasing, setIsErasing] = useState(false);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const createSketch = useMutation(api.createSketch.sketchTable);
+  const [baseImage, setBaseImage] = useState<string>("");
 
+  // Creating data in the convex table
+  const createSketch = useMutation(api.createSketch.sketchTable);
+  // Getting data in the convex table
+  const getDataConvex = useQuery(api.createSketch.getSketchData);
   const toggleEraser = () => {
     setIsErasing(!isErasing);
     canvasRef.current?.eraseMode(!isErasing);
@@ -22,10 +27,6 @@ const CanvasComponent: React.FC = () => {
 
   const clearCanvas = () => {
     canvasRef.current?.clearCanvas();
-  };
-
-  const resetCanvas = () => {
-    canvasRef.current?.resetCanvas();
   };
 
   const undoLast = () => {
@@ -60,23 +61,34 @@ const CanvasComponent: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    let image: string | undefined;
+
     if (canvasRef.current) {
-      const image = await canvasRef.current.exportImage("png");
-      try {
-        await createSketch({ text:inputSketch, image: image });
-        setInputSketch("")
-      } catch (err) {
-        console.error("Error creating table:", err);
-      }
+       image = await canvasRef.current.exportImage("png");
+       // setting the base64 url
+       setBaseImage(image)
     }
-  };
+
+    if (!image) {
+        console.error("No image available to submit.");
+        return; // Exit the function if the image is not available
+    }
+
+    try {
+        await createSketch({ text: inputSketch, image: image });
+        setInputSketch("");
+    } catch (err) {
+        console.error("Error creating table:", err);
+    }
+};
+   
 
   return (
     <div className="h-screen flex flex-col justify-center items-center">
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="bg-slate-800 w-full max-w-2xl rounded-lg shadow-lg p-8">
-        <label className="text-white ">Write your Message</label>
-            <input
+          <label className="text-white">Write your Message</label>
+          <input
             type="text"
             value={inputSketch}
             onChange={(e) => setInputSketch(e.target.value)}
@@ -88,12 +100,12 @@ const CanvasComponent: React.FC = () => {
             style={styles}
             width="600"
             height="400"
-            strokeWidth={isErasing ? 10 : 4}
+            strokeWidth={isErasing ? 20 : 4}
             strokeColor={isErasing ? "black" : "white"}
             canvasColor="black"
-            eraserWidth={10}
+         
           />
-          <div className=" grid grid-cols-3  gap-2 mt-4 space-x-2">
+          <div className="grid grid-cols-3 gap-2 mt-4 space-x-2">
             <button
               onClick={toggleEraser}
               className="bg-blue-500 text-white py-2 px-4 rounded"
@@ -134,6 +146,25 @@ const CanvasComponent: React.FC = () => {
                 Submit Image
               </button>
             </div>
+          </div>
+          <div className="border-t border-gray-300 pt-4 mt-4">
+            <h2 className="text-xl font-bold mb-2 text-white">
+              Convex Table content
+            </h2>
+
+            {getDataConvex?.map((data, index) => (
+              <div
+                key={index}
+                className="w-full mb-4 p-4 bg-slate-700 rounded-lg"
+              >
+                <h2 className="text-white whitespace-pre-line text-base leading-relaxed">
+                  {data.text}
+                </h2>
+                    <h2 className="text-white whitespace-pre-line text-base leading-relaxed">
+                  {data.image}
+                </h2>
+              </div>
+            ))}
           </div>
         </div>
       </form>

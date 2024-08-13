@@ -11,3 +11,11 @@ export const sketchTable = mutation({
         return newSketch
     }
 })
+
+
+export const getSketchData = query({
+    args:{},
+    handler: async(ctx) =>{
+        return ctx.db.query("sketch").collect();
+    }
+})
