@@ -65,25 +65,24 @@ const CanvasComponent: React.FC = () => {
     let imageBase64: string | undefined;
 
     if (canvasRef.current) {
-        // returns a Promise which resolves to base64 data url of the sketch.
-       imageBase64 = await canvasRef.current.exportImage("png");
-       // setting the base64 url
-       setBaseImage(imageBase64)
+      // returns a Promise which resolves to base64 data url of the sketch.
+      imageBase64 = await canvasRef.current.exportImage("png");
+      // setting the base64 url
+      setBaseImage(imageBase64);
     }
 
     if (!imageBase64) {
-        console.error("No image available to submit.");
-        return; // Exit the function if the image is not available
+      console.error("No image available to submit.");
+      return; // Exit the function if the image is not available
     }
 
     try {
-        await createSketch({ text: inputSketch, image: [""] });
-        setInputSketch("");
+      await createSketch({ text: inputSketch, image: [""], numberOfSamples: 0 });
+      setInputSketch("");
     } catch (err) {
-        console.error("Error creating table:", err);
+      console.error("Error creating table:", err);
     }
-};
-   
+  };
 
   return (
     <div className="h-screen flex flex-col justify-center items-center">
@@ -105,7 +104,6 @@ const CanvasComponent: React.FC = () => {
             strokeWidth={isErasing ? 20 : 4}
             strokeColor={isErasing ? "black" : "white"}
             canvasColor="black"
-         
           />
           <div className="grid grid-cols-3 gap-2 mt-4 space-x-2">
             <button
@@ -153,7 +151,7 @@ const CanvasComponent: React.FC = () => {
             <h2 className="text-xl font-bold mb-2 text-white">
               Convex Table content
             </h2>
-       
+
             {getDataConvex?.map((data, index) => (
               <div
                 key={index}
@@ -163,7 +161,7 @@ const CanvasComponent: React.FC = () => {
                   {data.text}
                 </h2>
 
-                  {/* {data.images.length > 0 && data.images.map((src,) =>(
+                {/* {data.images.length > 0 && data.images.map((src,) =>(
                     <Image
                     src={src}
                     alt={"images"}
@@ -172,7 +170,6 @@ const CanvasComponent: React.FC = () => {
                     />
                   ))} */}
               </div>
-            
             ))}
           </div>
         </div>

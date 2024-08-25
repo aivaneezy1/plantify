@@ -15,8 +15,8 @@ const Hero = () => {
         Generate an Image through a text or sketch
       </p>
    
-
-      <div className="mt-8 grid gap-4 md:grid-cols-4 sm:grid-cols-2 grid-cols-1">
+   
+      <div className="mt-8 grid gap-4 md:grid-cols-4  grid-cols-3">
         {getImages ? (
           getImages.map((data, index) =>
             data.images.map((src, i) => (

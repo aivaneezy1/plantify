@@ -6,10 +6,17 @@ import {
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { error } from "console";
 
-// Creating a table
+
+
+// Creating a table 
 export const sketchTable = mutation({
-  args: { text: v.string(), image: v.array(v.string()) },
+  args: {
+    text: v.string(),
+    image: v.array(v.string()),
+    numberOfSamples: v.number(),
+  },
   handler: async (ctx, args) => {
     const newSketch = await ctx.db.insert("sketch", {
       text: args.text,
@@ -22,6 +29,7 @@ export const sketchTable = mutation({
       sketchId: retrievedSketch?._id!,
       text: args.text,
       image: args.image,
+      numberOfSamples: args.numberOfSamples,
     });
 
     return newSketch;
@@ -34,35 +42,49 @@ export const generateImageAction = internalAction({
     text: v.string(),
     image: v.array(v.string()),
     sketchId: v.id("sketch"),
+    numberOfSamples: v.number(),
   },
   handler: async (ctx, args) => {
-    const res = await fetch("https://modelslab.com/api/v6/realtime/text2img", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
-        prompt: args.text,
-        negative_prompt: "bad quality",
-        width: "512",
-        height: "512",
-        safety_checker: false,
-        seed: null,
-        samples: 2,
-        base64: false,
-        webhook: null,
-        track_id: null,
-      }),
-    });
-    const data = await res.json();
-    console.log(data);
-    console.log("data porxy", data.proxy_links);
-    //Update the image with the text
-    await ctx.scheduler.runAfter(0, internal.createSketch.updateSketchResult, {
-      sketchId: args.sketchId,
-      result: data.proxy_links,
-    });
+    try {
+      const res = await fetch(
+        "https://modelslab.com/api/v6/realtime/text2img",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
+            prompt: args.text,
+            negative_prompt: "bad quality",
+            width: "512",
+            height: "512",
+            safety_checker: false,
+            seed: null,
+            samples: args.numberOfSamples,
+            base64: false,
+            webhook: null,
+            track_id: null,
+          }),
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        //Update the image with the text
+        await ctx.scheduler.runAfter(
+          0,
+          internal.createSketch.updateSketchResult,
+          {
+            sketchId: args.sketchId,
+            result: data.proxy_links,
+          }
+        );
+      }else{
+        throw error("response error in fetch")
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
   },
 });
 
@@ -83,7 +105,6 @@ export const getSketchData = query({
     return ctx.db.query("sketch").collect();
   },
 });
-
 
 // Getting the newly created images
 export const getImage = query({
