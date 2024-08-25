@@ -153,7 +153,7 @@ const CanvasComponent: React.FC = () => {
             <h2 className="text-xl font-bold mb-2 text-white">
               Convex Table content
             </h2>
-
+       
             {getDataConvex?.map((data, index) => (
               <div
                 key={index}

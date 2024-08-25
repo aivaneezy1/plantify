@@ -14,11 +14,7 @@ const Hero = () => {
       <p className="text-2xl text-white mb-8">
         Generate an Image through a text or sketch
       </p>
-      <Link href="/generate">
-        <button className="bg-purple-500 text-white font-bold py-2 px-12 rounded hover:bg-purple-600 transition duration-300">
-          Generate
-        </button>
-      </Link>
+   
 
       <div className="mt-8 grid gap-4 md:grid-cols-4 sm:grid-cols-2 grid-cols-1">
         {getImages ? (
@@ -52,9 +48,11 @@ const Hero = () => {
           <p className="text-lg mb-6">
             Provide a prompt and watch your prompt turned into an image
           </p>
-          <button className="bg-blue-500 text-white font-bold py-2 px-8 rounded hover:bg-blue-600 transition duration-300">
-            Generate
-          </button>
+         <Link href="/generatePrompt">
+          <button className="bg-purple-500 text-white font-bold py-2 px-12 rounded hover:bg-purple-600 transition duration-300">
+          Generate
+        </button>
+         </Link>
         </div>
         <div className="flex justify-center items-center">
           <Image

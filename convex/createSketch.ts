@@ -30,17 +30,20 @@ export const sketchTable = mutation({
 
 // RUN  third party services
 export const generateImageAction = internalAction({
-  args: { text: v.string(), image: v.array(v.string()), sketchId: v.id("sketch") },
+  args: {
+    text: v.string(),
+    image: v.array(v.string()),
+    sketchId: v.id("sketch"),
+  },
   handler: async (ctx, args) => {
     const res = await fetch("https://modelslab.com/api/v6/realtime/text2img", {
       method: "POST",
-       headers: {
-          "Content-Type": "application/json"
-        },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        key: process.env.STABLEDIFFUSION_API_TOKEN,
-        prompt:
-          args.text,
+        key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
+        prompt: args.text,
         negative_prompt: "bad quality",
         width: "512",
         height: "512",
@@ -52,21 +55,20 @@ export const generateImageAction = internalAction({
         track_id: null,
       }),
     });
-    const data = await res.json()
-    console.log(data)
-    console.log("data porxy", data.proxy_links)
+    const data = await res.json();
+    console.log(data);
+    console.log("data porxy", data.proxy_links);
     //Update the image with the text
     await ctx.scheduler.runAfter(0, internal.createSketch.updateSketchResult, {
       sketchId: args.sketchId,
-      result: data.proxy_links
-    })
+      result: data.proxy_links,
+    });
   },
-
 });
 
 // updated SketchResult
 export const updateSketchResult = internalMutation({
-  args: { sketchId: v.id("sketch"), result: v.array(v.string())},
+  args: { sketchId: v.id("sketch"), result: v.array(v.string()) },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.sketchId, {
       images: args.result,
@@ -79,5 +81,17 @@ export const getSketchData = query({
   args: {},
   handler: async (ctx) => {
     return ctx.db.query("sketch").collect();
+  },
+});
+
+
+// Getting the newly created images
+export const getImage = query({
+  args: { sketchId: v.string() },
+  handler: async (ctx, args) => {
+    return ctx.db
+      .query("sketch")
+      .filter((q) => q.eq(q.field("_id"), args.sketchId))
+      .collect(); // Ensure you return the results
   },
 });
