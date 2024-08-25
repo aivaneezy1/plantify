@@ -4,6 +4,7 @@ import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import Image from "next/image";
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
   borderRadius: "0.25rem",
@@ -61,21 +62,22 @@ const CanvasComponent: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let image: string | undefined;
+    let imageBase64: string | undefined;
 
     if (canvasRef.current) {
-       image = await canvasRef.current.exportImage("png");
+        // returns a Promise which resolves to base64 data url of the sketch.
+       imageBase64 = await canvasRef.current.exportImage("png");
        // setting the base64 url
-       setBaseImage(image)
+       setBaseImage(imageBase64)
     }
 
-    if (!image) {
+    if (!imageBase64) {
         console.error("No image available to submit.");
         return; // Exit the function if the image is not available
     }
 
     try {
-        await createSketch({ text: inputSketch, image: image });
+        await createSketch({ text: inputSketch, image: [""] });
         setInputSketch("");
     } catch (err) {
         console.error("Error creating table:", err);
@@ -160,10 +162,17 @@ const CanvasComponent: React.FC = () => {
                 <h2 className="text-white whitespace-pre-line text-base leading-relaxed">
                   {data.text}
                 </h2>
-                    <h2 className="text-white whitespace-pre-line text-base leading-relaxed">
-                  {data.image}
-                </h2>
+
+                  {/* {data.images.length > 0 && data.images.map((src,) =>(
+                    <Image
+                    src={src}
+                    alt={"images"}
+                    width={250}
+                    height={250}
+                    />
+                  ))} */}
               </div>
+            
             ))}
           </div>
         </div>

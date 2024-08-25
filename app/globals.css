@@ -2,3 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply bg-gradient-to-r from-gray-700 to-gray-900;
+ 
+  color: white; /* Optional: sets the text color to white for better contrast */
+}
+
+.rainbow-gradient {
+  background: linear-gradient(to right, 
+    red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}

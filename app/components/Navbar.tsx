@@ -1,12 +1,18 @@
-import React from 'react'
+import Link from 'next/link';
+import React from 'react';
 
 const Navbar = () => {
+  
   return (
-    <div className='bg-gradient-to-r from-gray-700 to-gray-900 text-white p-4 flex justify-between items-center shadow-md cursor-pointer'>
+    <div className='text-white p-4 flex justify-between items-center shadow-md cursor-pointer'>
+     <Link href="/">
       <div>Logo</div>
-      <div>Login</div>
+     </Link>
+      <button className='bg-purple-500 text-white py-2 px-8 rounded-full hover:bg-purple-600 transition duration-300'>
+        Login
+      </button>
     </div>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
