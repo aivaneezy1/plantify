@@ -16,7 +16,7 @@ const Hero = () => {
       </p>
    
    
-      <div className="mt-8 grid gap-4 md:grid-cols-4  grid-cols-3">
+      <div className="mt-8 grid gap-4 md:grid-cols-4  grid-cols-3 " >
         {getImages ? (
           getImages.map((data, index) =>
             data.images.map((src, i) => (
@@ -66,7 +66,7 @@ const Hero = () => {
       </div>
 
       <div className="mt-20 flex flex-col md:flex-row justify-center items-center gap-5 p-6">
-        <div className="flex justify-center items-center ">=
+        <div className="flex justify-center items-center ">
           <Image
             src="/medium.webp"
             alt="First Image"
@@ -82,9 +82,11 @@ const Hero = () => {
           <p className="text-lg mb-6">
             Provide a sketch, and watch the sketch turned into an image
           </p>
+          <Link href="/generateSketch">
           <button className="bg-blue-500 text-white font-bold py-2 px-8 rounded hover:bg-blue-600 transition duration-300">
             Generate
           </button>
+          </Link>
         </div>
       </div>
     </div>

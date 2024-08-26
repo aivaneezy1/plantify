@@ -6,7 +6,7 @@ import {
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { error } from "console";
+
 
 
 
@@ -80,13 +80,15 @@ export const generateImageAction = internalAction({
           }
         );
       }else{
-        throw error("response error in fetch")
+        console.log("response error in fetch")
       }
     } catch (err) {
       console.log("err", err);
     }
   },
 });
+
+// Generate images from a sketch
 
 // updated SketchResult
 export const updateSketchResult = internalMutation({

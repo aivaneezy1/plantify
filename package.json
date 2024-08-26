@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.637.0",
     "ai": "^3.3.5",
     "convex": "^1.14.0",
+    "mime": "^4.0.4",
     "next": "14.2.5",
     "openai": "^4.55.4",
     "openai-edge": "^1.2.2",

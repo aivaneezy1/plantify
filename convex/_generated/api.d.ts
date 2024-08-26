@@ -14,6 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as createImage from "../createImage.js";
 import type * as createSketch from "../createSketch.js";
 import type * as todo from "../todo.js";
 
@@ -26,6 +27,7 @@ import type * as todo from "../todo.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  createImage: typeof createImage;
   createSketch: typeof createSketch;
   todo: typeof todo;
 }>;
