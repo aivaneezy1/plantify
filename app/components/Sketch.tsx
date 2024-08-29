@@ -26,9 +26,12 @@ const SketchComponent = () => {
   const [inputSketch, setInputSketch] = useState<string>("");
   const [isErasing, setIsErasing] = useState(false);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const [baseImage, setBaseImage] = useState<string>("");
 
+  // Creating table
   const createSketch = useMutation(api.createImage.sketchImageTable);
+
+  // Getting data from the table
+  const getAllImages = useQuery(api.createImage.getAllImage);
 
   const toggleEraser = () => {
     setIsErasing(!isErasing);
@@ -39,12 +42,10 @@ const SketchComponent = () => {
     canvasRef.current?.clearCanvas();
   };
 
-
-
   const handleSubmitSketch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let path:string = `imageSketch/${Date.now()}.png`
+    let path: string = `imageSketch/${Date.now()}.png`;
 
     if (!canvasRef.current) {
       console.error("Canvas reference is missing.");
@@ -54,32 +55,37 @@ const SketchComponent = () => {
     try {
       // Returns a Promise that resolves to a base64 data URL of the sketch
       const imageBase64 = await canvasRef.current.exportImage("png");
-   
+
       if (!imageBase64) {
         console.error("No image available to submit.");
         return; // Exit the function if the image is not available
       }
 
-    // Convert base64 to binary data(buffer)
-    const base64data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
-    const imageBuffer = Buffer.from(base64data, "base64");
+      // Convert base64 to binary data(buffer)
+      const base64data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+      // The binary data (now a Buffer) is wrapped in an array because the Blob constructor expects an iterable (like an array) containing the data parts.
+      const imageBlob = new Blob([Buffer.from(base64data, "base64")], {
+        type: "image/png",
+      });
 
-    // S3  upload parameters
-    const uploadParams = {
-      Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-      Key: path,
-      Body: imageBuffer,
-      ContentType: "image/png",
-    }
+      // S3  upload parameters
+      const uploadParams = {
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+        Key: path,
+        Body: imageBlob,
+        ContentType: "image/png",
+      };
 
-    //Upload image to s3
-    const data = await s3.send(new PutObjectCommand(uploadParams));
-    console.log("Image successfully uploaded to S3:", data);
- 
-      // Send the base64 image to your createSketch function
+      //Upload image to s3
+      await s3.send(new PutObjectCommand(uploadParams));
+
+      // Construct the URL to access the image
+      const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com/${path}`;
+
+      //Send the promp text and image  url to the CreateImage table
       await createSketch({
         text: inputSketch,
-        image: `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com/${path}` 
+        image: imageUrl,
       });
 
       // Clear the input field after successful submission
@@ -89,6 +95,7 @@ const SketchComponent = () => {
     }
   };
 
+  console.log("data", getAllImages);
   return (
     <div className="flex flex-col sm:flex-row space-y-10 md:space-y-0 md:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
       <div className="w-full md:w-1/2 p-4">
@@ -143,14 +150,28 @@ const SketchComponent = () => {
           </div>
         </form>
       </div>
-      <div className="flex justify-center items-center w-auto md:w-1/2">
-        <Image
-          src="/ai.webp"
-          alt="test"
-          width={500}
-          height={500}
-          className="rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300"
-        />
+      <div className="flex flex-col justify-center items-center w-full md:w-1/2 space-y-6 ">
+        {getAllImages ? (
+          getAllImages.map((data, idx) => (
+            <>
+              <div
+                key={idx}
+                className="flex flex-col gap-2 justify-center items-center w-full"
+              >
+                <h2 className="text-2xl font-bold ">{data.text}</h2>
+                <Image
+                  src={data.image}
+                  alt={`Image ${idx}`}
+                  width={500}
+                  height={500}
+                  className="rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 mb-20"
+                />
+              </div>
+            </>
+          ))
+        ) : (
+          <h2 className="flex justify-center items-center">Loading...</h2>
+        )}
       </div>
     </div>
   );
