@@ -58,7 +58,7 @@ export const generateSketchImage = internalAction({
       );
       if (res.status === 200) {
         const data = await res.json();
-        console.log("Response body:", data);
+       
 
         const base64String  = data.image;
         const mimeType = "image/png"

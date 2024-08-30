@@ -45,6 +45,8 @@ export const generateImageAction = internalAction({
     numberOfSamples: v.number(),
   },
   handler: async (ctx, args) => {
+    // to change image resolution.
+    // 256x256 , 512x512, 1024x1024
     try {
       const res = await fetch(
         "https://modelslab.com/api/v6/realtime/text2img",
@@ -54,6 +56,7 @@ export const generateImageAction = internalAction({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            // to change API to aivannn acc.
             key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
             prompt: args.text,
             negative_prompt: "bad quality",

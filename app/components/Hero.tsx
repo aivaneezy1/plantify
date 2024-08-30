@@ -60,7 +60,7 @@ const Hero = () => {
             alt="First Image"
             width={500}
             height={500}
-            className="w-full h-auto object-cover rounded-lg shadow-lg"
+            className="w-full h-auto object-cover rounded-lg shadow-lg transition transform hover:scale-105 duration-300 cursor-pointer"
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ const Hero = () => {
             alt="First Image"
             width={500}
             height={500}
-            className="w-full h-auto object-cover rounded-lg shadow-lg"
+            className="w-full h-auto object-cover rounded-lg shadow-lg transition transform hover:scale-105 duration-300 cursor-pointer" 
           />
         </div>
         <div className=" text-center ">
@@ -83,7 +83,7 @@ const Hero = () => {
             Provide a sketch, and watch the sketch turned into an image
           </p>
           <Link href="/generateSketch">
-          <button className="bg-blue-500 text-white font-bold py-2 px-8 rounded hover:bg-blue-600 transition duration-300">
+          <button className="bg-blue-500 text-white font-bold py-2 px-8 rounded hover:bg-blue-600 ">
             Generate
           </button>
           </Link>

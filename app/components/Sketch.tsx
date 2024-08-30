@@ -6,7 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Image from "next/image";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import mime from "mime"; // Import mime package
+
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
   borderRadius: "0.25rem",
@@ -95,7 +95,6 @@ const SketchComponent = () => {
     }
   };
 
-  console.log("data", getAllImages);
   return (
     <div className="flex flex-col sm:flex-row space-y-10 md:space-y-0 md:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
       <div className="w-full md:w-1/2 p-4">
@@ -164,7 +163,7 @@ const SketchComponent = () => {
                   alt={`Image ${idx}`}
                   width={500}
                   height={500}
-                  className="rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300 mb-20"
+                  className="rounded-lg shadow-lg transition transform hover:scale-105 duration-300 mb-20"
                 />
               </div>
             </>

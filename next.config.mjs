@@ -13,11 +13,16 @@ const nextConfig = {
       },
 
       {
-        protocol:"https",
-        hostname: "cdn2.stablediffusionapi.com"
-      }
+        protocol: "https",
+        hostname: "cdn2.stablediffusionapi.com",
+      },
+
+      {
+        protocol: "https",
+        hostname: "aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com",
+      },
     ],
   },
 };
- 
+
 export default nextConfig;
