@@ -25,7 +25,7 @@ export const sketchTable = mutation({
     await ctx.scheduler.runAfter(0, internal.createSketch.generateImageAction, {
       sketchId: retrievedSketch?._id!,
       text: args.text,
-      image: args.image,
+
       numberOfSamples: args.numberOfSamples,
     });
 
@@ -37,12 +37,12 @@ export const sketchTable = mutation({
 export const generateImageAction = internalAction({
   args: {
     text: v.string(),
-    image: v.array(v.string()),
+
     sketchId: v.id("sketch"),
     numberOfSamples: v.number(),
   },
   handler: async (ctx, args) => {
-    if (args.text && args.image) {
+    if (args.text && args.numberOfSamples > 0) {
       try {
         const res = await fetch(
           "https://modelslab.com/api/v6/realtime/text2img",
@@ -52,8 +52,7 @@ export const generateImageAction = internalAction({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              // to change API to aivannn acc.
-              key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
+              key: "YNpUd8kfXF4GNQhQSusJxixjPRquMqwfbZH9m6EqRbfnw0ETfPCtsYzqEusT",
               prompt: args.text,
               negative_prompt: "bad quality",
               width: "512",
@@ -84,8 +83,8 @@ export const generateImageAction = internalAction({
       } catch (err) {
         console.log("err", err);
       }
-    }else{
-      console.log("arguments needed")
+    } else {
+      console.log("arguments needed");
     }
   },
 });
@@ -109,7 +108,6 @@ export const getSketchData = query({
     return ctx.db.query("sketch").collect();
   },
 });
-
 
 // Getting the newly created images
 export const getImage = query({
