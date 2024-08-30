@@ -27,7 +27,7 @@ const Hero = () => {
                     alt={`Image ${i}`}
                     width={500}
                     height={500}
-                    className="w-full h-auto object-cover"
+                    className="w-full h-auto object-cover transition transform hover:scale-105 duration-300 rounded-md"
                   />
                 ) : (
                   <h2>Image is Loading...</h2>
@@ -55,6 +55,7 @@ const Hero = () => {
          </Link>
         </div>
         <div className="flex justify-center items-center">
+         <Link href="/generatePrompt">
           <Image
             src="/ai.webp"
             alt="First Image"
@@ -62,11 +63,13 @@ const Hero = () => {
             height={500}
             className="w-full h-auto object-cover rounded-lg shadow-lg transition transform hover:scale-105 duration-300 cursor-pointer"
           />
+         </Link>
         </div>
       </div>
 
       <div className="mt-20 flex flex-col md:flex-row justify-center items-center gap-5 p-6">
         <div className="flex justify-center items-center ">
+         <Link href="/generateSketch">
           <Image
             src="/medium.webp"
             alt="First Image"
@@ -74,6 +77,7 @@ const Hero = () => {
             height={500}
             className="w-full h-auto object-cover rounded-lg shadow-lg transition transform hover:scale-105 duration-300 cursor-pointer" 
           />
+         </Link>
         </div>
         <div className=" text-center ">
           <h2 className="text-4xl font-semibold mb-4">

@@ -7,10 +7,7 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
-
-
-
-// Creating a table 
+// Creating a table
 export const sketchTable = mutation({
   args: {
     text: v.string(),
@@ -45,48 +42,50 @@ export const generateImageAction = internalAction({
     numberOfSamples: v.number(),
   },
   handler: async (ctx, args) => {
-    // to change image resolution.
-    // 256x256 , 512x512, 1024x1024
-    try {
-      const res = await fetch(
-        "https://modelslab.com/api/v6/realtime/text2img",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            // to change API to aivannn acc.
-            key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
-            prompt: args.text,
-            negative_prompt: "bad quality",
-            width: "512",
-            height: "512",
-            safety_checker: false,
-            seed: null,
-            samples: args.numberOfSamples,
-            base64: false,
-            webhook: null,
-            track_id: null,
-          }),
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        //Update the image with the text
-        await ctx.scheduler.runAfter(
-          0,
-          internal.createSketch.updateSketchResult,
+    if (args.text && args.image) {
+      try {
+        const res = await fetch(
+          "https://modelslab.com/api/v6/realtime/text2img",
           {
-            sketchId: args.sketchId,
-            result: data.proxy_links,
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              // to change API to aivannn acc.
+              key: "77smNxrQvXtezDegnAtDKTqRebxFWnxzqvC6FcX7n0HaBc4bduSsQF2pu42S",
+              prompt: args.text,
+              negative_prompt: "bad quality",
+              width: "512",
+              height: "512",
+              safety_checker: false,
+              seed: null,
+              samples: args.numberOfSamples,
+              base64: false,
+              webhook: null,
+              track_id: null,
+            }),
           }
         );
-      }else{
-        console.log("response error in fetch")
+        if (res.ok) {
+          const data = await res.json();
+          //Update the image with the text
+          await ctx.scheduler.runAfter(
+            0,
+            internal.createSketch.updateSketchResult,
+            {
+              sketchId: args.sketchId,
+              result: data.proxy_links,
+            }
+          );
+        } else {
+          console.log("response error in fetch");
+        }
+      } catch (err) {
+        console.log("err", err);
       }
-    } catch (err) {
-      console.log("err", err);
+    }else{
+      console.log("arguments needed")
     }
   },
 });
@@ -110,6 +109,7 @@ export const getSketchData = query({
     return ctx.db.query("sketch").collect();
   },
 });
+
 
 // Getting the newly created images
 export const getImage = query({
