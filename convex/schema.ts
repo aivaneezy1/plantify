@@ -5,6 +5,7 @@ export default defineSchema({
   imageSketch: defineTable({
     image: v.string(),
     text: v.string(),
+    status: v.string(),
   }),
   sketch: defineTable({
     images: v.array(v.string()),
