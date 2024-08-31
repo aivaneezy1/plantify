@@ -7,6 +7,14 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 
+
+// STABLE API key
+function stableApi(){
+  let apikey:string | undefined;
+  apikey = process.env.NEXT_PUBLIC_STABILITY_API_KEY;
+  return apikey;
+}
+
 export const sketchImageTable = mutation({
   args: {
     text: v.string(),
@@ -51,7 +59,7 @@ export const generateSketchImage = internalAction({
           method: "POST",
           headers: {
             // currently using the dummy API key
-            Authorization: `Bearer ${process.env.STABILIY_API_KEY}`,
+            Authorization: `Bearer ${stableApi()}`,
             Accept: "application/json", // Adjust if needed,
           },
           body: formData,
