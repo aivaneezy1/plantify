@@ -18,8 +18,6 @@ export const sketchImageTable = mutation({
       image: args.image,
     });
 
-    console.log("image", args.image);
-    console.log("text", args.text);
     // ID of a document in the _id field
     const retrievedSketch = await ctx.db.get(newSketchImage);
     await ctx.scheduler.runAfter(0, internal.createImage.generateSketchImage, {
@@ -45,12 +43,14 @@ export const generateSketchImage = internalAction({
       const formData = new FormData();
       formData.append("image", imageBlob, "sketch.png"); // Use a filename here
       formData.append("prompt", args.text);
+     
       const res = await fetch(
         "https://api.stability.ai/v2beta/stable-image/control/sketch",
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer sk-8HLs5WSLu9ym4bpWY104rKW8bDP59nw081Lv201IYllMot5H`,
+          // currently using the dummy API key
+            Authorization: `Bearer sk-DHYmnJUcR9uJffdq9hJvckC8OugHzgEE8KT2fOXoseQRF6KY`,
             Accept: "application/json", // Adjust if needed,
           },
           body: formData,
@@ -58,8 +58,6 @@ export const generateSketchImage = internalAction({
       );
       if (res.status === 200) {
         const data = await res.json();
-       
-
         const base64String  = data.image;
         const mimeType = "image/png"
         const dataUrl = `data:${mimeType};base64,${base64String}`
@@ -77,6 +75,8 @@ export const generateSketchImage = internalAction({
     }
   },
 });
+
+
 
 // updating the table with the newly generated image
 export const updateSketchImage = internalMutation({
@@ -103,7 +103,7 @@ export const getImage = query({
   args: { sketchId: v.string() },
   handler: async (ctx, args) => {
     return ctx.db
-      .query("sketch")
+      .query("imageSketch")
       .filter((q) => q.eq(q.field("_id"), args.sketchId))
       .collect(); // Ensure you return the results
   },
