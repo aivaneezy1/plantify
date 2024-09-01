@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-const DashBoardPage = () => {
+const DashboardComponent = () => {
   return (
-    <div className="flex justify-center items-center mt-20 gap-10 font-semibold ">
+   <div className="flex justify-center items-center mt-20 gap-10 font-semibold ">
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="shadow-lg p-6 bg-blue-500 text-white rounded-md cursor-pointer transition transform hover:scale-105 duration-300">
           <h2 className="text-xl font-semibold">Trial🔒</h2>
@@ -21,7 +21,7 @@ const DashBoardPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashBoardPage;
+export default DashboardComponent

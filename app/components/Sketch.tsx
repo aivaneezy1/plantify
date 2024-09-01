@@ -115,7 +115,7 @@ const SketchComponent = () => {
 
   useEffect(() => {
     // Set loading to false if the response has a success flag or if there's no data
-    if ((getImage && getImage.image.length > 0)) {
+    if (getImage && getImage.image.length > 0) {
       setLoading(false);
     }
   }, [getImage]);
@@ -123,7 +123,7 @@ const SketchComponent = () => {
   console.log("res", getImage);
   return (
     <div className="flex flex-col sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
-      <div className="w-full sm:w-1/2 p-4">
+      <div className="w-full sm:w-1/2 p-4 bg-[#333536]     rounded-lg">
         <form onSubmit={handleSubmitSketch} className="space-y-6">
           <div className="flex flex-col">
             <label className="text-white text-lg font-semibold">
@@ -134,21 +134,29 @@ const SketchComponent = () => {
               value={inputSketch}
               onChange={(e) => setInputSketch(e.target.value)}
               placeholder="Type your prompt here"
-              className="text-black border border-gray-300 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+              className="text-white bg-[#1F1F1F] border border-gray-600 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               required
             />
-            <ReactSketchCanvas
-              ref={canvasRef}
-              style={{
-                borderRadius: "0.375rem",
-              }} /* Adjust border radius for consistency */
-              width="100%"
-              height="400px"
-              strokeWidth={isErasing ? 20 : 4}
-              strokeColor={isErasing ? "black" : "white"}
-              canvasColor="black"
-              className="mt-4 rounded-lg shadow-md"
-            />
+            <div  className={` rounded-lg overflow-hidden shadow-md mt-4 ${
+          isErasing ? 'cursor-erase' : 'cursor-draw'
+        }`}>
+              <ReactSketchCanvas
+                ref={canvasRef}
+                style={{
+                  borderRadius: "0.375rem", // Ensures the canvas itself is rounded
+                  width: "100%",
+                  height: "400px",
+                  border: "1px solid black",
+                  
+                }}
+                width="100%"
+                height="400px"
+                strokeWidth={isErasing ? 20 : 4}
+                strokeColor={isErasing ? "white" : "black"}
+                canvasColor="white"
+                className=" "
+              />
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
               <button
                 onClick={toggleEraser}
@@ -168,7 +176,7 @@ const SketchComponent = () => {
           </div>
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full md:w-auto"
+            className="bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full "
           >
             Generate
           </button>

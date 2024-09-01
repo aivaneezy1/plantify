@@ -30,7 +30,10 @@ const s3 = new S3Client({
 });
 
 // Function to convert base64 string into a blob object. Using atob() and Blob()
-
+/*
+https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+https://saturncloud.io/blog/creating-a-blob-from-a-base64-string-in-javascript/#:~:text=BLOB%20in%20JavaScript-,To%20convert%20a%20Base64%20string%20to%20a%20BLOB%20in%20JavaScript,creates%20a%20new%20BLOB%20object.
+ */
 function base64toBlob(base64String: string, contentType: string = "") {
   const byteCharacters = atob(base64String); // convert base64 string into a binary string data.
   const byteArrays: number[] = [];
@@ -80,6 +83,7 @@ export const generateSketchImage = internalAction({
     try {
       let path: string = `generatedSketch/${Date.now()}.png`;
       const response = await fetch(args.image);
+      // creating a blob
       const imageBlob = await response.blob();
       const formData = new FormData();
       formData.append("image", imageBlob, "sketch.png"); // Use a filename here
