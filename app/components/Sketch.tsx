@@ -15,7 +15,7 @@ const styles: React.CSSProperties = {
 };
 
 // Initialize S3 client
-const s3 = new S3Client({
+export const s3AwsClient = new S3Client({
   region: process.env.NEXT_PUBLIC_AWS_S3_REGION, // Replace with your region
   credentials: {
     accessKeyId: process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID || "",
@@ -93,7 +93,7 @@ const SketchComponent = () => {
       };
 
       //Upload image to s3
-      await s3.send(new PutObjectCommand(uploadParams));
+      await s3AwsClient.send(new PutObjectCommand(uploadParams));
 
       // Construct the URL to access the image
       const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com/${path}`;

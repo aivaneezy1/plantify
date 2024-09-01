@@ -38,7 +38,7 @@ const Hero = () => {
       </p>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4  grid-cols-3 ">
-    
+      
         {dataImages.length > 0 ? (
           dataImages.map((src, idx) => (
           <div key={idx}>
