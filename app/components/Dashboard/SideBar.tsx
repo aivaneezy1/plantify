@@ -77,7 +77,7 @@ const Sidebar = () => {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex md:flex-col gap-5 ml-5 mt-10 h-full relative">
         {renderSidebarContent()}
-        <div className="mt-auto bg-[#434C5E] p-8 rounded-lg">
+        <div className="mt-auto bg-[#434C5E] p-8 rounded-lg e">
           <h2 className="text-center mb-2 font-semibold">900/1000 Bits</h2>
           <div className="flex flex-row justify-between">
             <div className="w-full">
