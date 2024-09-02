@@ -28,14 +28,14 @@ const BillingComponent = () => {
   const totalBits = inputBits ? calculateBits(parseInt(inputBits)) : 0;
 
   return (
-    <div className="flex justify-center items-center text-2xl w-full mt-10 sm:mt-0 sm:ml-10">
+    <div className="flex justify-center items-center text-2xl w-full mt-20 sm:ml-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="bg-[#434C5E] text-white p-8 rounded-lg">
-          <h2>Credits</h2>
-          <hr className="my-4 border-black" />{" "}
+          <h2>Bits</h2>
+          <hr className="my-4 border-white" />{" "}
           {/* Border at bottom of Credits */}
           <h2 className="font-bold text-3xl">800</h2>
-          <hr className="mt-4 border-black" /> {/* Border at bottom of 800 */}
+          <hr className="mt-4 border-white" /> {/* Border at bottom of 800 */}
           <h2 className="mt-4">Purchase bits to generate images</h2>
           <div className="relative mt-2 w-full">
             <label
@@ -61,19 +61,19 @@ const BillingComponent = () => {
           </button>
         </div>
 
-        <div className="bg-[#434C5E] text-white p-8 rounded-lg">
+        <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5">
           <h2>Payments</h2>
-          <hr className="my-4 border-black" />{" "}
+          <hr className="my-4 border-white" />{" "}
 
           <div className="flex flex-row justify-between items-center ">
           <div className="flex flex-col gap-5">
           <h2>Date</h2>
-          <span>01/09/24, 10:59:56</span>
+          <span className="text-gray-300">01/09/24, 10:59:56</span>
           </div>
 
            <div className="flex flex-col gap-5">
           <h2>Bits</h2>
-          <span>1,000</span>
+          <span className="text-gray-300">1,000</span>
           </div>
           </div>
         </div>
