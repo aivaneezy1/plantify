@@ -120,7 +120,7 @@ const SketchComponent = () => {
     }
   }, [getImage]);
 
-  console.log("res", getImage);
+
   return (
     <div className="flex flex-col sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
       <div className="w-full sm:w-1/2 p-4 bg-[#333536]     rounded-lg">

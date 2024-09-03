@@ -20,7 +20,7 @@ const Hero = () => {
         const res = await fetch("api/s3-getImages");
         if(res.ok){
           const data = await res.json();
-          console.log("data", data)
+       
           setDataImages(data);
           
         }
