@@ -10,6 +10,8 @@ export default defineSchema({
   sketch: defineTable({
     images: v.array(v.string()),
     text: v.string(),
+    width: v.string(),
+    height: v.string(),
   }),
   todos: defineTable({ text: v.string() }),
 });

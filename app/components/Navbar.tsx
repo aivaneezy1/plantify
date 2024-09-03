@@ -6,6 +6,9 @@ import { useUser } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 const Navbar = () => {
   const { isLoaded, isSignedIn, user } = useUser();
+
+
+  
   return (
     <div className="text-white p-4 flex justify-between items-center shadow-md cursor-pointer font-medium sticky top-0 z-50 bg-gradient-to-r from-gray-700 to-gray-900 gap-5">
       <div className=" flex justify-center items-center mr-auto gap-5">
@@ -14,8 +17,9 @@ const Navbar = () => {
         </Link>
         {/*Product Menu */}
         <ProductComponent />
-      </div>
       
+      </div>
+
       {isSignedIn ? (
          <Link href="/dashboard" className="hover:text-blue-500">
         Dashboard

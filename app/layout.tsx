@@ -6,9 +6,7 @@ import { ConvexClientProvider } from "./ConvexClientProvider";
 import DataContextProvider from "./Context/Provider";
 import { ClerkProvider, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
 import Loading from "./utils/Loading";
-import { dark } from '@clerk/themes'
-
-
+import { dark } from "@clerk/themes";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -22,9 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-     appearance={{
+      appearance={{
         baseTheme: dark,
-      }}>
+      }}
+    >
       <html lang="en">
         <body>
           <ClerkLoading>
@@ -35,6 +34,7 @@ export default function RootLayout({
           <ClerkLoaded>
             <DataContextProvider>
               <Navbar />
+
               <ConvexClientProvider>{children}</ConvexClientProvider>
             </DataContextProvider>
           </ClerkLoaded>

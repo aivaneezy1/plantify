@@ -68,7 +68,7 @@ const Hero = () => {
             Provide a prompt and watch your prompt turned into an image
           </p>
           <Link href="/generatePrompt">
-            <button className="bg-purple-500 text-white font-bold py-2 px-12 rounded hover:bg-purple-600 transition duration-300">
+            <button className="bg-blue-500 text-white font-bold py-2 px-12 rounded hover:bg-blue-600 transition duration-300">
               Generate
             </button>
           </Link>
@@ -106,7 +106,7 @@ const Hero = () => {
             Provide a sketch, and watch the sketch turned into an image
           </p>
           <Link href="/generateSketch">
-            <button className="bg-blue-500 text-white font-bold py-2 px-8 rounded hover:bg-blue-600 ">
+            <button className="bg-purple-500 text-white font-bold py-2 px-8 rounded hover:bg-purple-600 ">
               Generate
             </button>
           </Link>

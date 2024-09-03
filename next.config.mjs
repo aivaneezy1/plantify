@@ -21,6 +21,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com"
+      }
     ],
   },
 };

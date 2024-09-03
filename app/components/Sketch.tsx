@@ -118,12 +118,11 @@ const SketchComponent = () => {
     if (getImage && getImage.image.length > 0) {
       setLoading(false);
     }
-  }, [getImage]);
-
+  }, [getImage]); 
 
   return (
     <div className="flex flex-col sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
-      <div className="w-full sm:w-1/2 p-4 bg-[#333536]     rounded-lg">
+      <div className="w-full sm:w-1/2 p-4 bg-[#434C5E]     rounded-lg">
         <form onSubmit={handleSubmitSketch} className="space-y-6">
           <div className="flex flex-col">
             <label className="text-white text-lg font-semibold">
@@ -134,12 +133,14 @@ const SketchComponent = () => {
               value={inputSketch}
               onChange={(e) => setInputSketch(e.target.value)}
               placeholder="Type your prompt here"
-              className="text-white bg-[#1F1F1F] border border-gray-600 rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+              className="text-black bg-white border border-black rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               required
             />
-            <div  className={` rounded-lg overflow-hidden shadow-md mt-4 ${
-          isErasing ? 'cursor-erase' : 'cursor-draw'
-        }`}>
+            <div
+              className={` rounded-lg overflow-hidden shadow-md mt-4 ${
+                isErasing ? "cursor-erase" : "cursor-draw"
+              }`}
+            >
               <ReactSketchCanvas
                 ref={canvasRef}
                 style={{
@@ -147,7 +148,6 @@ const SketchComponent = () => {
                   width: "100%",
                   height: "400px",
                   border: "1px solid black",
-                  
                 }}
                 width="100%"
                 height="400px"
@@ -176,30 +176,37 @@ const SketchComponent = () => {
           </div>
           <button
             type="submit"
-            className="bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full "
+            className=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full "
           >
             Generate
           </button>
         </form>
       </div>
-      <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6">
+      <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6 border border-dotted p-4  relative">
         {loading ? (
           <div className="flex justify-center flex-col items-center text-white text-center">
             <Loading />
             <h2>Loading...</h2>
           </div>
-        ) : getImage && getImage.image.length > 0 ? (
-          getImage.image.map((data, idx) => (
-            <div key={idx} className="flex flex-col gap-4 items-center w-full">
-              <h2 className="text-4xl font-bold">{data.text}</h2>
-              <Image
-                src={data.image}
-                alt={`Image ${idx}`}
-                width={900}
-                height={800}
-                className="rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300"
-              />
-              <div className="flex flex-row justify-center items-center  gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer">
+        ) : getAllImages && getAllImages.length > 0 ? (
+          getAllImages.map((data, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col gap-4 items-center w-full  "
+            >
+              <div className="flex items-start  relative" >
+              <h2 className="text-2xl font-bold text-left mb-5">{data.text}</h2>
+              </div>
+              <div className=" ">
+                <Image
+                  src={data.image}
+                  alt={`Image ${idx}`}
+                  width={900}
+                  height={900}
+                  className="rounded-lg shadow-lg  o object-cover transition-transform transform hover:scale-105 duration-300"
+                />
+              </div>
+              <div className="flex flex-row justify-center items-center  gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer relative">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 640 512"

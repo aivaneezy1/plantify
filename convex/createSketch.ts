@@ -11,22 +11,33 @@ import { internal } from "./_generated/api";
 export const sketchTable = mutation({
   args: {
     text: v.string(),
+    width: v.string(),
+    height: v.string(),
     image: v.array(v.string()),
     numberOfSamples: v.number(),
   },
+
   handler: async (ctx, args) => {
     const newSketch = await ctx.db.insert("sketch", {
       text: args.text,
+      width: args.width,
+      height: args.height,
       images: args.image,
     });
+    console.log("text", args.text);
+    console.log("sample", args.numberOfSamples);
+    console.log("width", args.width);
+    console.log("height", args.height);
+
     // ID of a document in the _id field
     const retrievedSketch = await ctx.db.get(newSketch);
 
     await ctx.scheduler.runAfter(0, internal.createSketch.generateImageAction, {
-      sketchId: retrievedSketch?._id!,
       text: args.text,
-
+      width: args.width,
+      height: args.height,
       numberOfSamples: args.numberOfSamples,
+      sketchId: retrievedSketch?._id!,
     });
 
     return newSketch;
@@ -37,9 +48,10 @@ export const sketchTable = mutation({
 export const generateImageAction = internalAction({
   args: {
     text: v.string(),
-
-    sketchId: v.id("sketch"),
+    width: v.string(),
+    height: v.string(),
     numberOfSamples: v.number(),
+    sketchId: v.id("sketch"),
   },
   handler: async (ctx, args) => {
     if (args.text && args.numberOfSamples > 0) {
@@ -52,11 +64,11 @@ export const generateImageAction = internalAction({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              key: "YNpUd8kfXF4GNQhQSusJxixjPRquMqwfbZH9m6EqRbfnw0ETfPCtsYzqEusT",
+              key: "suI7U9qamQdIL2kR0YdkUY2nzELp8dGoOpf8gm1RTMfpRPo77NHtDqG3fqo6",
               prompt: args.text,
               negative_prompt: "bad quality",
-              width: "512",
-              height: "512",
+              width: args.width,
+              height: args.height,
               safety_checker: false,
               seed: null,
               samples: args.numberOfSamples,
