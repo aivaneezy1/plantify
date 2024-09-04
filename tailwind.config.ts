@@ -13,6 +13,10 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      cursor:{
+        'draw': 'url(/pencil.cur),auto',
+        'erase': 'url(/eraser.cur)  16 16, auto',
+      }
     },
   },
   plugins: [],
