@@ -7,6 +7,13 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
+function API_KEY(api_key: string) {
+  let apikey: string | undefined;
+  apikey = api_key;
+  return apikey;
+}
+
+
 // Creating a table
 export const sketchTable = mutation({
   args: {
@@ -64,7 +71,7 @@ export const generateImageAction = internalAction({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              key: "suI7U9qamQdIL2kR0YdkUY2nzELp8dGoOpf8gm1RTMfpRPo77NHtDqG3fqo6",
+              key: `${API_KEY(process.env.NEXT_PUBLIC_STABLEDIFFUSION_API_TOKEN || "")}`,
               prompt: args.text,
               negative_prompt: "bad quality",
               width: args.width,

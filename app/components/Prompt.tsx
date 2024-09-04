@@ -63,8 +63,8 @@ const PromptComponent = () => {
       // Create the sketch and get the new sketch ID
       const newSketch: Id<"sketch"> = await createSketch({
         text: inputPrompt,
-        width:inputWidth,
-        height:inputHeight,
+        width: inputWidth,
+        height: inputHeight,
         image: [""],
         numberOfSamples: parseInt(inputNumber),
       });
@@ -78,8 +78,9 @@ const PromptComponent = () => {
       console.error("Error creating sketch:", err);
     }
   };
-  console.log("inputWidth", inputWidth)
-   console.log("inputHeight", inputHeight)
+  console.log("inputWidth", inputWidth);
+  console.log("inputHeight", inputHeight);
+  console.log("sketch", getImageData);
   return (
     <div className="flex flex-col md:flex-row mt-20">
       <div className="md:w-1/2 p-4">
@@ -131,23 +132,23 @@ const PromptComponent = () => {
       </div>
 
       <div className="w-full md:w-1/2 p-4 flex flex-col  ">
-        {getImageData ? (
+        {getImageData && getImageData.length > 0 ? (
           getImageData.map((data, index) => (
-            <div key={index} className="flex-1 mb-6">
+            <div key={index}>
               <h2 className="text-3xl font-bold text-center mb-4">
                 {data.text}
               </h2>
               <div className="flex flex-wrap gap-6 justify-center">
-                {data.images.length > 0 ? (
-                  data.images.map((src, indx) => (
-                    <div key={indx} className="relative mb-6">
+                {data.images.length > 0 &&
+                  data.images.map((src, idx) => (
+                    <div key={idx} className="relative mb-6">
                       {src ? (
                         <div>
                           <Image
                             src={src}
                             alt="Image"
-                            width={250}
-                            height={250}
+                            width={300}
+                            height={300}
                             className="border border-gray-300 rounded-lg shadow-lg object-cover"
                           />
                           <div className="flex flex-row justify-center items-center mt-2 gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer">
@@ -171,25 +172,30 @@ const PromptComponent = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex justify-center flex-col items-center text-white text-center">
+                        <div className="flex justify-center flex-col items-center text-white text-center mt-10">
                           <Loading />
                           <h2>Loading...</h2>
                         </div>
                       )}
                     </div>
-                  ))
-                ) : (
-                  <div className="flex justify-center flex-col items-center text-white text-center">
-                    <Loading />
-                    <h2>Loading...</h2>
-                  </div>
-                )}
+                  ))}
               </div>
             </div>
           ))
         ) : (
-          <h2 className="text-center text-gray-500">Loading....</h2>
+          <div className="flex justify-center flex-col items-center text-white text-center gap-2">
+          <Image
+          src="https://aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com/loading/spike.gif"
+          alt="spike"
+          width={500}
+          height={500}
+          className="rounded-lg"
+          />
+            <h2 className="font-semibold text-1xl">No images generated</h2>
+          </div>
         )}
+
+   
       </div>
     </div>
   );
