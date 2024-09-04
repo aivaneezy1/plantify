@@ -16,7 +16,7 @@ const styles: React.CSSProperties = {
 
 // Initialize S3 client
 export const s3AwsClient = new S3Client({
-  region: process.env.NEXT_PUBLIC_AWS_S3_REGION, // Replace with your region
+  region: "eu-north-1", // Replace with your region
   credentials: {
     accessKeyId: process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID || "",
     secretAccessKey: process.env.NEXT_PUBLIC_AWS_S3_SECRET_ACCESS_KEY || "",
@@ -96,7 +96,7 @@ const SketchComponent = () => {
       await s3AwsClient.send(new PutObjectCommand(uploadParams));
 
       // Construct the URL to access the image
-      const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_S3_REGION}.amazonaws.com/${path}`;
+      const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.eu-north-1.amazonaws.com/${path}`;
 
       //Send the promp text and image  url to the CreateImage table
       const newlyCreatedSketch: Id<"imageSketch"> = await createSketch({
