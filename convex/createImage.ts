@@ -22,7 +22,7 @@ function API_KEY(api_key: string) {
 }
 
 const s3 = new S3Client({
-  region: API_KEY(process.env.NEXT_PUBLIC_AWS_S3_REGION || ""),
+  region: "eu-north-1",
   credentials: {
     accessKeyId: API_KEY( process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID || ""),
     secretAccessKey:  API_KEY( process.env.NEXT_PUBLIC_AWS_S3_SECRET_ACCESS_KEY || ""),
