@@ -15,11 +15,6 @@ export const userTable = mutation({
     tokenIdentifier: v.string(),
   },
   handler: async (ctx, args) => {
-    // check if the user is currently logged in
-    const checkUser = await ctx.auth.getUserIdentity();
-    if (!checkUser) {
-      console.log("User is not logged in");
-    }
     // check if user is already in our database
     const usersExist = await ctx.db
       .query("users")
