@@ -1,4 +1,4 @@
-import CanvasComponent from "../components/Canvas";
+
 import PromptComponent from "../components/Prompt";
 import React from 'react'
 
