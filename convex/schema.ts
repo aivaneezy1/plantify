@@ -13,5 +13,14 @@ export default defineSchema({
     width: v.string(),
     height: v.string(),
   }),
+  users: defineTable({
+    firstName: v.string(),
+    lastName: v.string(),
+    email: v.string(),
+    apiCallTotal: v.number(),
+     apiCallRemaining: v.number(),
+    tokenIdentifier: v.string(),
+  }).index("by_token", ["tokenIdentifier"]),
+
   todos: defineTable({ text: v.string() }),
 });
