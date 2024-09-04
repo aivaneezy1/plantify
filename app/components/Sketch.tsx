@@ -182,7 +182,7 @@ const SketchComponent = () => {
           </button>
         </form>
       </div>
-      <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6 border border-dotted p-4  relative">
+      <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6   relative">
         {loading ? (
           <div className="flex justify-center flex-col items-center text-white text-center">
             <Loading />
@@ -227,10 +227,15 @@ const SketchComponent = () => {
             </div>
           ))
         ) : (
-          <div className="flex justify-center flex-col items-center text-white text-center">
-            {/* <Loading/>
-        <h2>Loading...</h2> */}
-            No Media Found
+           <div className="flex justify-center flex-col items-center text-white text-center gap-2">
+          <Image
+          src="https://aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com/loading/spike.gif"
+          alt="spike"
+          width={500}
+          height={500}
+          className="rounded-lg"
+          />
+            <h2 className="font-semibold text-1xl">No images generated</h2>
           </div>
         )}
       </div>
