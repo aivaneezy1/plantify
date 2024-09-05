@@ -6,6 +6,9 @@ import {
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { parseArgs } from "util";
+// AWS S3 Credentials
 
 function API_KEY(api_key: string) {
   let apikey: string | undefined;
@@ -13,6 +16,15 @@ function API_KEY(api_key: string) {
   return apikey;
 }
 
+const s3 = new S3Client({
+  region: "eu-north-1",
+  credentials: {
+    accessKeyId: API_KEY(process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID || ""),
+    secretAccessKey: API_KEY(
+      process.env.NEXT_PUBLIC_AWS_S3_SECRET_ACCESS_KEY || ""
+    ),
+  },
+});
 
 // Creating a table
 export const sketchTable = mutation({
@@ -35,7 +47,6 @@ export const sketchTable = mutation({
       height: args.height,
       images: args.image,
     });
- 
 
     // ID of a document in the _id field
     const retrievedSketch = await ctx.db.get(newSketch);
@@ -66,6 +77,7 @@ export const generateImageAction = internalAction({
   handler: async (ctx, args) => {
     if (args.text && args.numberOfSamples > 0) {
       try {
+        let path: string = `Prompt-images/${Date.now()}.png`;
         const res = await fetch(
           "https://modelslab.com/api/v6/realtime/text2img",
           {
@@ -88,8 +100,31 @@ export const generateImageAction = internalAction({
             }),
           }
         );
+
+        // Upload the image to aws s3 bucket
+
         if (res.ok) {
           const data = await res.json();
+          console.log("data.proxy_links", data.proxy_links)
+           console.log("data.proxy_links length", data.proxy_links.length)
+          let imageUrl: string;
+          for (let i = 0; i < data.proxy_links.length; i++) {
+            imageUrl = data.proxy_links[i];
+
+            const fetchImageURL = await fetch(imageUrl);
+            // Making it a blob
+            const imageBuffer = await fetchImageURL.blob();
+            // S3 upload paramaters
+            const uploadParms = {
+              Bucket: API_KEY(process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || ""),
+              Key: path,
+              Body: imageBuffer,
+              ContentType: "image/png",
+            };
+
+            await s3.send(new PutObjectCommand(uploadParms));
+          }
+
           //Update the image with the text
           await ctx.scheduler.runAfter(
             0,
@@ -99,14 +134,16 @@ export const generateImageAction = internalAction({
               result: data.proxy_links,
             }
           );
-         
+
           // // // Update the user table with images generated;
-          await ctx.scheduler.runAfter(0, internal.createUser.updateUsersTable, {
-            id:args.userTableId,
-            images: data.proxy_links
-          })
-
-
+          await ctx.scheduler.runAfter(
+            0,
+            internal.createUser.updateUsersTable,
+            {
+              id: args.userTableId,
+              images: data.proxy_links,
+            }
+          );
         } else {
           console.log("response error in fetch");
         }
