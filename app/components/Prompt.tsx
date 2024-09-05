@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, FormEvent, ChangeEvent, useContext } from "react";
+import React, { useState, useRef, FormEvent, ChangeEvent, useContext, useEffect } from "react";
 import { DataContext } from "../Context/Provider";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
@@ -15,13 +15,21 @@ const PromptComponent = () => {
   const [inputNumber, setInputNumber] = useState<string>("1");
   const [inputWidth, setInputWidth] = useState<string>("800");
   const [inputHeight, setInputHeight] = useState<string>("600");
-  // getting the userTableId using DataContext
-  const {userTableId} = useContext(DataContext)
-  // getting the userId;
+  const [getIdLocalStorage, setGetIdLocalStorage] =  useState<Id<"users"> | null>(null);
   const { user } = useUser();
   // asssinging user id to string id
   const id: string | undefined = user?.id || "";
 
+
+   // Getting data from local Storage
+  useEffect(() => {
+    const tableId = window.localStorage.getItem("tableId");
+    if (tableId) {
+      setGetIdLocalStorage(tableId as Id<"users">); // Type assertion
+    }
+  }, []);
+
+ 
   // Creating data in the convex table
   const createSketch = useMutation(api.createSketch.sketchTable);
   // Getting data in the convex table
@@ -70,9 +78,10 @@ const PromptComponent = () => {
     e.preventDefault();
 
     try {
+      
       // Create the sketch and get the new sketch ID
       const newSketch: Id<"sketch"> = await createSketch({
-        userTableId: userTableId!,
+        userTableId: getIdLocalStorage!,
         userId: id,
         text: inputPrompt,
         width: inputWidth,
