@@ -20,6 +20,7 @@ function API_KEY(api_key: string) {
   apikey = api_key;
   return apikey;
 }
+// AWS S3 Credentials
 
 const s3 = new S3Client({
   region: "eu-north-1",
@@ -132,13 +133,12 @@ export const generateSketchImage = internalAction({
         ContentType: "image/png",
       };
 
-      // //Upload image to s3
+           // Upload the image to aws s3 bucket
       await s3.send(new PutObjectCommand(uploadParams));
 
       // // Construct the URL to access the image
        const imageUrl = `https://${API_KEY(process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || "")}.s3.eu-north-1.amazonaws.com/${path}`;
 
-       console.log("imageUrl", imageUrl)
 
       if (res.status === 200) {
         await ctx.scheduler.runAfter(
