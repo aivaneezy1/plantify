@@ -13,8 +13,7 @@ export default function Home() {
   const [hasStoredUser, setHasStoredUser] = useState<Boolean>(false);
   const { isLoaded, isSignedIn, user } = useUser();
   // using context to get the user table id
-  const {setUserTableId} = useContext(DataContext);
-
+  const { setUserTableId } = useContext(DataContext);
 
   let firstName: string | undefined = user?.firstName || "";
   let lastName: string | undefined = user?.lastName || "";
@@ -25,11 +24,6 @@ export default function Home() {
   let image: string[] = [""];
 
 
-function API_KEY(api_key: string) {
-  let apikey: string | undefined;
-  apikey = api_key;
-  return apikey;
-}
   useEffect(() => {
     const handleStoreUser = async () => {
       // User signing-up for the first time
@@ -44,11 +38,9 @@ function API_KEY(api_key: string) {
             apiCallTotal,
             apiCallRemaining,
             tokenIdentifier: id,
-          }); 
+          });
 
-
-          // setting the userTable id
-          setUserTableId(existingUser);
+          window.localStorage.setItem("tableId", existingUser);
           if (existingUser) {
             setHasStoredUser(true); // Set the flag to prevent future executions
           }
@@ -61,10 +53,12 @@ function API_KEY(api_key: string) {
     handleStoreUser();
   }, [isLoaded, isSignedIn, id, hasStoredUser, storeUser]);
 
+
+
   return (
     <div>
       <Hero />
- 
+
       <Footer />
     </div>
   );
