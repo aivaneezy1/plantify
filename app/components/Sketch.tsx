@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, FormEvent, useEffect } from "react";
+import React, { useState, useRef, FormEvent, useEffect, useContext } from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
@@ -9,6 +9,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Loading from "../utils/Loading";
 import { Id } from "@/convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
+import { DataContext } from "../Context/Provider";
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
   borderRadius: "0.25rem",
@@ -30,9 +31,13 @@ const SketchComponent = () => {
   const [sketchId, setSketchId] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(false);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const [isUpdatingImage, setIsUpdatingImage] = useState(false);
 
 
+  // Getting the user id of the user
+  const {user} = useUser();
+  const id: string | undefined = user?.id || "";
+  // Getting the userIdTable of the users using data context
+  const {userTableId} = useContext(DataContext);
   // Creating table
   const createSketch = useMutation(api.createImage.sketchImageTable);
 
@@ -52,6 +57,9 @@ const SketchComponent = () => {
   const clearCanvas = () => {
     canvasRef.current?.clearCanvas();
   };
+
+    console.log("id", id);
+      console.log("userTableId", userTableId) 
 
   const handleDownload = (imageUrl: string) => {
     const link = document.createElement("a");
@@ -102,7 +110,8 @@ const SketchComponent = () => {
 
       //Send the promp text and image  url to the CreateImage table
       const newlyCreatedSketch: Id<"imageSketch"> = await createSketch({
-    
+        userTableId: userTableId!,
+        userId: id,
         text: inputSketch,
         image: imageUrl,
      
@@ -192,8 +201,8 @@ const SketchComponent = () => {
             <Loading />
             <h2>Loading...</h2>
           </div>
-        ) : getAllImages && getAllImages.length > 0 ? (
-          getAllImages.map((data, idx) => (
+        ) : getImage?.image && getImage.image.length > 0 ? (
+          getImage.image.map((data, idx) => (
             <div
               key={idx}
               className="flex flex-col gap-4 items-center w-full  "

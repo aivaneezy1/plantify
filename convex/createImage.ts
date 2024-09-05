@@ -7,7 +7,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
+import { Id } from "./_generated/dataModel";
 // STABLE API key
 function stableApi() {
   let apikey: string | undefined;
@@ -51,30 +51,48 @@ function base64toBlob(base64String: string, contentType: string = "") {
 
 export const sketchImageTable = mutation({
   args: {
+   userTableId: v.id("users"),
+    userId: v.string(),
     text: v.string(),
     image: v.string(),
   },
   handler: async (ctx, args) => {
     const newSketchImage = await ctx.db.insert("imageSketch", {
+      userTableId: args.userTableId,
+      userId: args.userId,
       text: args.text,
       image: args.image,
       status: "pending",
     });
 
+    // console.log("userTableId", args.userTableId)
+    //  console.log("userId", args.userId)
+    // console.log("text", args.text)
+    // console.log("image", args.image)
     // ID of a document in the _id field
     const retrievedSketch = await ctx.db.get(newSketchImage);
-    await ctx.scheduler.runAfter(0, internal.createImage.generateSketchImage, {
-      text: args.text,
-      image: args.image,
-      sketchId: retrievedSketch?._id!,
-    });
+   try{
+       await ctx.scheduler.runAfter(0, internal.createImage.generateSketchImage, {
+        userTableId: args.userTableId,
+        text: args.text,
+        image: args.image,
+        sketchId: retrievedSketch?._id!,
+      });
+   }catch(err){
+    console.log(err);
+   }
 
     return newSketchImage;
   },
+
+  
 });
+
+
 
 export const generateSketchImage = internalAction({
   args: {
+    userTableId:v.id("users"),
     text: v.string(),
     image: v.string(),
     sketchId: v.id("imageSketch"),
@@ -95,7 +113,7 @@ export const generateSketchImage = internalAction({
           method: "POST",
           headers: {
             // currently using the dummy API key
-            Authorization: `Bearer ${stableApi()}`,
+            Authorization: `Bearer ${API_KEY(process.env.NEXT_PUBLIC_STABILITY_API_KEY || "")}`,
             Accept: "application/json", // Adjust if needed,
           },
           body: formData,
@@ -120,6 +138,8 @@ export const generateSketchImage = internalAction({
       // // Construct the URL to access the image
        const imageUrl = `https://${API_KEY(process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || "")}.s3.eu-north-1.amazonaws.com/${path}`;
 
+       console.log("imageUrl", imageUrl)
+
       if (res.status === 200) {
         await ctx.scheduler.runAfter(
           0,
@@ -129,6 +149,11 @@ export const generateSketchImage = internalAction({
             result: imageUrl,
           }
         );
+        // Update the user table with the image generated.
+        await ctx.scheduler.runAfter(0, internal.createUser.updateUsersTable, {
+            id:args.userTableId,
+            images: [imageUrl]
+        })
       }
     } catch (err) {
       console.log(err);
@@ -162,13 +187,7 @@ export const getImage = query({
 });
 
 
-// Get the imagse for recent request of the  user
-export const getRecentReqImages = query({
-  args : { userId: v.string()},
-  handler: async(ctx, args) =>{
-    const getRecentReq = await ctx.db.query("users")
-  }
- })
+
 
 // Getting all images of the table
 export const getAllImage = query({

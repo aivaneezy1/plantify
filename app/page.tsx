@@ -25,7 +25,11 @@ export default function Home() {
   let image: string[] = [""];
 
 
-
+function API_KEY(api_key: string) {
+  let apikey: string | undefined;
+  apikey = api_key;
+  return apikey;
+}
   useEffect(() => {
     const handleStoreUser = async () => {
       // User signing-up for the first time
@@ -60,6 +64,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
+ 
       <Footer />
     </div>
   );
