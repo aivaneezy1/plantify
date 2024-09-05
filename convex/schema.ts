@@ -3,6 +3,8 @@ import { v } from "convex/values";
 
 export default defineSchema({
   imageSketch: defineTable({
+    userTableId: v.string(),
+    userId: v.string(),
     image: v.string(),
     text: v.string(),
     status: v.string(),
@@ -19,7 +21,7 @@ export default defineSchema({
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
-    imagesUrl: v.array(v.string()),
+     imagesUrl: v.array(v.string()),
     apiCallTotal: v.number(),
     apiCallRemaining: v.number(),
     tokenIdentifier: v.string(),

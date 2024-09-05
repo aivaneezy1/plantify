@@ -6,7 +6,7 @@ import {
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { Id } from "./_generated/dataModel";
+
 function API_KEY(api_key: string) {
   let apikey: string | undefined;
   apikey = api_key;

@@ -43,10 +43,18 @@ export const userTable = mutation({
 });
 
 export const updateUsersTable = internalMutation({
-  args:{id: v.id("users"), images: v.array(v.string())},
-  handler : async (ctx,args) =>{
+  args: { id: v.id("users"), images: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    const userRecord = await ctx.db.get(args.id);
+   
+    // Check if the imagesUrl already exists, otherwise default to an empty array
+    const currentImages = userRecord?.imagesUrl || [];
+
+    // Use the spread operator to add the new images to the existing array
+    const updatedImages = [...currentImages, ...args.images];
+
     await ctx.db.patch(args.id, {
-      imagesUrl: args.images
-    })
-  }
-})
+      imagesUrl: updatedImages,
+    });
+  },
+});

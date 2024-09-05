@@ -31,7 +31,7 @@ const PromptComponent = () => {
   });
 
   // const getImageData = useQuery(api.createSketch.getSketchData, {});
-  console.log("userTableId", userTableId);
+ 
   // Function to handle width and height changes
   const handleDimensionChanges = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
