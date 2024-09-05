@@ -8,6 +8,7 @@ import Image from "next/image";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Loading from "../utils/Loading";
 import { Id } from "@/convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
   borderRadius: "0.25rem",
@@ -30,6 +31,7 @@ const SketchComponent = () => {
   const [loading, setLoading] = useState<Boolean>(false);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const [isUpdatingImage, setIsUpdatingImage] = useState(false);
+
 
   // Creating table
   const createSketch = useMutation(api.createImage.sketchImageTable);
@@ -100,8 +102,10 @@ const SketchComponent = () => {
 
       //Send the promp text and image  url to the CreateImage table
       const newlyCreatedSketch: Id<"imageSketch"> = await createSketch({
+    
         text: inputSketch,
         image: imageUrl,
+     
       });
       setSketchId(newlyCreatedSketch);
 

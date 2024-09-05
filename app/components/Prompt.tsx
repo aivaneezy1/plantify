@@ -1,17 +1,26 @@
 "use client";
-import React, { useState, useRef, FormEvent, ChangeEvent } from "react";
+import React, { useState, useRef, FormEvent, ChangeEvent, useContext } from "react";
+import { DataContext } from "../Context/Provider";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import Loading from "../utils/Loading";
+import { useUser } from "@clerk/nextjs";
+
 const PromptComponent = () => {
   const [inputPrompt, setInputPrompt] = useState<string>("");
   const [sketchId, setSketchId] = useState<string>("");
   const [inputNumber, setInputNumber] = useState<string>("1");
   const [inputWidth, setInputWidth] = useState<string>("800");
   const [inputHeight, setInputHeight] = useState<string>("600");
+  // getting the userTableId using DataContext
+  const {userTableId} = useContext(DataContext)
+  // getting the userId;
+  const { user } = useUser();
+  // asssinging user id to string id
+  const id: string | undefined = user?.id || "";
 
   // Creating data in the convex table
   const createSketch = useMutation(api.createSketch.sketchTable);
@@ -22,7 +31,7 @@ const PromptComponent = () => {
   });
 
   // const getImageData = useQuery(api.createSketch.getSketchData, {});
-
+  console.log("userTableId", userTableId);
   // Function to handle width and height changes
   const handleDimensionChanges = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
@@ -31,6 +40,7 @@ const PromptComponent = () => {
     setInputHeight(newHeight);
   };
 
+    
   // Function to download images as pdf
   const handleDownload = async (imageUrl: string) => {
     try {
@@ -62,6 +72,8 @@ const PromptComponent = () => {
     try {
       // Create the sketch and get the new sketch ID
       const newSketch: Id<"sketch"> = await createSketch({
+        userTableId: userTableId!,
+        userId: id,
         text: inputPrompt,
         width: inputWidth,
         height: inputHeight,
@@ -78,9 +90,9 @@ const PromptComponent = () => {
       console.error("Error creating sketch:", err);
     }
   };
-  console.log("inputWidth", inputWidth);
-  console.log("inputHeight", inputHeight);
-  console.log("sketch", getImageData);
+  // console.log("inputWidth", inputWidth);
+  // console.log("inputHeight", inputHeight);
+  // console.log("sketch", getImageData);
   return (
     <div className="flex flex-col md:flex-row mt-20">
       <div className="md:w-1/2 p-4">
@@ -184,18 +196,16 @@ const PromptComponent = () => {
           ))
         ) : (
           <div className="flex justify-center flex-col items-center text-white text-center gap-2">
-          <Image
-          src="https://aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com/loading/spike.gif"
-          alt="spike"
-          width={500}
-          height={500}
-          className="rounded-lg"
-          />
+            <Image
+              src="https://aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com/loading/spike.gif"
+              alt="spike"
+              width={500}
+              height={500}
+              className="rounded-lg"
+            />
             <h2 className="font-semibold text-1xl">No images generated</h2>
           </div>
         )}
-
-   
       </div>
     </div>
   );

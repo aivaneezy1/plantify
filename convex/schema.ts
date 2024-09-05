@@ -8,6 +8,8 @@ export default defineSchema({
     status: v.string(),
   }),
   sketch: defineTable({
+    userTableId: v.string(),
+    userId: v.string(),
     images: v.array(v.string()),
     text: v.string(),
     width: v.string(),
@@ -17,8 +19,9 @@ export default defineSchema({
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
+    imagesUrl: v.array(v.string()),
     apiCallTotal: v.number(),
-     apiCallRemaining: v.number(),
+    apiCallRemaining: v.number(),
     tokenIdentifier: v.string(),
   }).index("by_token", ["tokenIdentifier"]),
 

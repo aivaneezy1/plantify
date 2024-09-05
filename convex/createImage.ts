@@ -161,6 +161,15 @@ export const getImage = query({
   },
 });
 
+
+// Get the imagse for recent request of the  user
+export const getRecentReqImages = query({
+  args : { userId: v.string()},
+  handler: async(ctx, args) =>{
+    const getRecentReq = await ctx.db.query("users")
+  }
+ })
+
 // Getting all images of the table
 export const getAllImage = query({
   args: {},

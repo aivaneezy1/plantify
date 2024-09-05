@@ -6,7 +6,7 @@ import {
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
-
+import { Id } from "./_generated/dataModel";
 function API_KEY(api_key: string) {
   let apikey: string | undefined;
   apikey = api_key;
@@ -17,6 +17,8 @@ function API_KEY(api_key: string) {
 // Creating a table
 export const sketchTable = mutation({
   args: {
+    userTableId: v.id("users"),
+    userId: v.string(),
     text: v.string(),
     width: v.string(),
     height: v.string(),
@@ -26,20 +28,20 @@ export const sketchTable = mutation({
 
   handler: async (ctx, args) => {
     const newSketch = await ctx.db.insert("sketch", {
+      userTableId: args.userTableId,
+      userId: args.userId,
       text: args.text,
       width: args.width,
       height: args.height,
       images: args.image,
     });
-    console.log("text", args.text);
-    console.log("sample", args.numberOfSamples);
-    console.log("width", args.width);
-    console.log("height", args.height);
+ 
 
     // ID of a document in the _id field
     const retrievedSketch = await ctx.db.get(newSketch);
 
     await ctx.scheduler.runAfter(0, internal.createSketch.generateImageAction, {
+      userTableId: args.userTableId,
       text: args.text,
       width: args.width,
       height: args.height,
@@ -54,6 +56,7 @@ export const sketchTable = mutation({
 // RUN  third party services
 export const generateImageAction = internalAction({
   args: {
+    userTableId: v.id("users"),
     text: v.string(),
     width: v.string(),
     height: v.string(),
@@ -96,6 +99,14 @@ export const generateImageAction = internalAction({
               result: data.proxy_links,
             }
           );
+         
+          // // // Update the user table with images generated;
+          await ctx.scheduler.runAfter(0, internal.createUser.updateUsersTable, {
+            id:args.userTableId,
+            images: data.proxy_links
+          })
+
+
         } else {
           console.log("response error in fetch");
         }
