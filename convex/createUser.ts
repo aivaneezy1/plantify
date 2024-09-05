@@ -10,6 +10,7 @@ export const userTable = mutation({
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
+    imagesUrl: v.array(v.string()),
     apiCallTotal: v.number(),
     apiCallRemaining: v.number(),
     tokenIdentifier: v.string(),
@@ -31,7 +32,7 @@ export const userTable = mutation({
       firstName: args.firstName,
       lastName: args.lastName,
       email: args.email,
-
+      imagesUrl: [""],
       apiCallTotal: args.apiCallTotal,
       apiCallRemaining: args.apiCallRemaining,
       tokenIdentifier: args.tokenIdentifier,
@@ -40,3 +41,12 @@ export const userTable = mutation({
     return newUsers;
   },
 });
+
+export const updateUsersTable = internalMutation({
+  args:{id: v.id("users"), images: v.array(v.string())},
+  handler : async (ctx,args) =>{
+    await ctx.db.patch(args.id, {
+      imagesUrl: args.images
+    })
+  }
+})
