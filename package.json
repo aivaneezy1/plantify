@@ -27,6 +27,7 @@
     "react-dom": "^18",
     "react-sketch-canvas": "^6.2.0",
     "replicate": "^0.32.0",
+    "stripe": "^16.10.0",
     "svix": "^1.32.0"
   },
   "devDependencies": {

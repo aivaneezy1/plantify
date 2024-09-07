@@ -6,10 +6,13 @@ import {
   OutlinedInput,
   InputAdornment,
 } from "@mui/material";
-
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import Router, { useRouter } from "next/navigation";
 const BillingComponent = () => {
   const [inputBits, setInputBits] = useState<string>("");
 
+  
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Allow only numeric values 
@@ -26,6 +29,21 @@ const BillingComponent = () => {
   };
   // Convert inputBits to a number only if it has a valid value
   const totalBits = inputBits ? calculateBits(parseInt(inputBits)) : 0;
+
+  
+  // Buy bits logic
+  const buyBits = useAction(api.stripe.pay);
+  const router = useRouter();
+  const handleBuyBits = async() =>{
+    // getting the session URL for the Checkout.
+    const url = await buyBits({
+      amount: parseInt(inputBits)
+    });
+    if(!url){
+      return;
+    }
+     router.push(url)
+  }
 
   return (
     <div className="flex justify-center items-center text-2xl w-full mt-20 sm:ml-10">
@@ -56,7 +74,9 @@ const BillingComponent = () => {
             </div>
             <h2 className="text-right">{totalBits} bits</h2>
           </div>
-          <button className="mt-4 w-full p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600">
+          <button
+          onClick={handleBuyBits} 
+          className="mt-4 w-full p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600">
             Buy
           </button>
         </div>

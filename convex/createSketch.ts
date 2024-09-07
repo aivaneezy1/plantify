@@ -105,8 +105,6 @@ export const generateImageAction = internalAction({
 
         if (res.ok) {
           const data = await res.json();
-          console.log("data.proxy_links", data.proxy_links)
-           console.log("data.proxy_links length", data.proxy_links.length)
           let imageUrl: string;
           for (let i = 0; i < data.proxy_links.length; i++) {
             imageUrl = data.proxy_links[i];

@@ -17,6 +17,8 @@ import type {
 import type * as createImage from "../createImage.js";
 import type * as createSketch from "../createSketch.js";
 import type * as createUser from "../createUser.js";
+import type * as http from "../http.js";
+import type * as stripe from "../stripe.js";
 import type * as todo from "../todo.js";
 
 /**
@@ -31,6 +33,8 @@ declare const fullApi: ApiFromModules<{
   createImage: typeof createImage;
   createSketch: typeof createSketch;
   createUser: typeof createUser;
+  http: typeof http;
+  stripe: typeof stripe;
   todo: typeof todo;
 }>;
 export declare const api: FilterApi<

@@ -18,10 +18,11 @@ export default defineSchema({
     height: v.string(),
   }),
   users: defineTable({
+    status:v.string(),
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
-     imagesUrl: v.array(v.string()),
+    imagesUrl: v.array(v.string()),
     apiCallTotal: v.number(),
     apiCallRemaining: v.number(),
     tokenIdentifier: v.string(),
