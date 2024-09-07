@@ -29,7 +29,7 @@ const PromptComponent = () => {
     }
   }, []);
 
- 
+  console.log("localid", getIdLocalStorage)
   // Creating data in the convex table
   const createSketch = useMutation(api.createSketch.sketchTable);
   // Getting data in the convex table
@@ -70,7 +70,7 @@ const PromptComponent = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url); // Free up memory
     } catch (error) {
-      console.error("Error downloading image:", error);
+        throw new Error((error as { message: string }).message);
     }
   };
 
@@ -96,12 +96,10 @@ const PromptComponent = () => {
       setInputWidth("");
       setInputHeight("");
     } catch (err) {
-      console.error("Error creating sketch:", err);
+        throw new Error((err as { message: string }).message);
     }
   };
-  // console.log("inputWidth", inputWidth);
-  // console.log("inputHeight", inputHeight);
-  // console.log("sketch", getImageData);
+
   return (
     <div className="flex flex-col md:flex-row mt-20">
       <div className="md:w-1/2 p-4">

@@ -3,6 +3,7 @@ import { api, internal } from "./_generated/api";
 import Stripe from "stripe";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
+import {format} from "date-fns"
 
 // Generate a checkout Link for the user
 export const pay = action({
@@ -39,11 +40,11 @@ export const pay = action({
                 name: "Bits Purchase",
               },
               /*
-                        This is calculated in cents
-                        1 euro = 100 cents
-                        10 euro = 1000 cents
-                        */
-              unit_amount: args.amount * 100,
+              This is calculated in cents
+              1 euro = 100 cents
+              10 euro = 1000 cents
+              */
+              unit_amount: args.amount * 50,
             },
             quantity: 1,
           },
@@ -61,9 +62,11 @@ export const pay = action({
   },
 });
 
+
+
 type MetaData = {
   userId: Id<"users">;
-};
+}; 
 
 export const fulfill = internalAction({
   args: { signature: v.string(), payload: v.string() },
@@ -88,11 +91,18 @@ export const fulfill = internalAction({
       if (event.type === "checkout.session.completed") {
         // Extract userId from metadata
         const userId = completedEvent.metadata.userId;
-        console.log("userid", userId)
+          // Extract the total amount converted in cents from metadata
+        const totalApiCall = completedEvent.amount_total || 0
+        const totalBitsAcquired = completedEvent.amount_total || 0
+        // Extract the time stamp
+        const transactionTimestamp = completedEvent.created;
+        const formattedDate = format(new Date(transactionTimestamp * 1000), "dd/MM/yy, HH:mm:ss")
         await ctx.runMutation(api.createUser.updateUserStatus, {
           userId: userId,
           status: "Pro",
-          apiCallTotal: 100,
+          apiCallTotal: totalApiCall,
+          transactionsTimeStamp:formattedDate,
+          bits: totalBitsAcquired
         });
       }
 

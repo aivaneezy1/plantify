@@ -11,7 +11,7 @@ http.route({
     const result = await ctx.runAction(internal.stripe.fulfill, {
       signature,
       payload: await request.text(),
-    });
+    })
     if (result) {
       return new Response(null, {
         status: 200,

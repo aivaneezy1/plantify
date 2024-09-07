@@ -102,9 +102,9 @@ export const generateImageAction = internalAction({
         );
 
         // Upload the image to aws s3 bucket
-
         if (res.ok) {
           const data = await res.json();
+          console.log('data', data);
           let imageUrl: string;
           for (let i = 0; i < data.proxy_links.length; i++) {
             imageUrl = data.proxy_links[i];
@@ -143,13 +143,14 @@ export const generateImageAction = internalAction({
             }
           );
         } else {
-          console.log("response error in fetch");
+          throw new Error(" Response error in fetch");
         }
       } catch (err) {
         console.log("err", err);
+        throw new Error((err as { message: string }).message);
       }
     } else {
-      console.log("arguments needed");
+      throw new Error("Arguents needed ");
     }
   },
 });

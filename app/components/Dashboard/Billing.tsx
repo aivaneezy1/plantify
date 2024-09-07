@@ -12,38 +12,36 @@ import Router, { useRouter } from "next/navigation";
 const BillingComponent = () => {
   const [inputBits, setInputBits] = useState<string>("");
 
-  
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Allow only numeric values 
+    // Allow only numeric values
     // return true else false
-    if (/^\d*$/.test(value)) {
+    if (/^[1-9]\d*$/.test(value) || value === "") {
       setInputBits(value);
     }
   };
 
   const calculateBits = (e: number) => {
     // 1 euro = 100 bits
-    const total = e * 100;
+    const total = e * 50;
     return total;
   };
   // Convert inputBits to a number only if it has a valid value
   const totalBits = inputBits ? calculateBits(parseInt(inputBits)) : 0;
 
-  
   // Buy bits logic
   const buyBits = useAction(api.stripe.pay);
   const router = useRouter();
-  const handleBuyBits = async() =>{
+  const handleBuyBits = async () => {
     // getting the session URL for the Checkout.
     const url = await buyBits({
-      amount: parseInt(inputBits)
+      amount: parseInt(inputBits),
     });
-    if(!url){
+    if (!url) {
       return;
     }
-     router.push(url)
-  }
+    router.push(url);
+  };
 
   return (
     <div className="flex justify-center items-center text-2xl w-full mt-20 sm:ml-10">
@@ -75,8 +73,9 @@ const BillingComponent = () => {
             <h2 className="text-right">{totalBits} bits</h2>
           </div>
           <button
-          onClick={handleBuyBits} 
-          className="mt-4 w-full p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600">
+            onClick={handleBuyBits}
+            className="mt-4 w-full p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600"
+          >
             Buy
           </button>
         </div>
@@ -84,17 +83,16 @@ const BillingComponent = () => {
         <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5">
           <h2>Payments</h2>
           <hr className="my-4 border-white" />{" "}
-
           <div className="flex flex-row justify-between items-center ">
-          <div className="flex flex-col gap-5">
-          <h2>Date</h2>
-          <span className="text-gray-300">01/09/24, 10:59:56</span>
-          </div>
+            <div className="flex flex-col gap-5">
+              <h2>Date</h2>
+              <span className="text-gray-300">01/09/24, 10:59:56</span>
+            </div>
 
-           <div className="flex flex-col gap-5">
-          <h2>Bits</h2>
-          <span className="text-gray-300">1,000</span>
-          </div>
+            <div className="flex flex-col gap-5">
+              <h2>Bits</h2>
+              <span className="text-gray-300">1,000</span>
+            </div>
           </div>
         </div>
       </div>

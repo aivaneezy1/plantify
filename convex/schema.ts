@@ -25,6 +25,8 @@ export default defineSchema({
     imagesUrl: v.array(v.string()),
     apiCallTotal: v.number(),
     apiCallRemaining: v.number(),
+    transactionsTimeStamp: v.array(v.string()),
+    bits: v.array(v.number()),
     tokenIdentifier: v.string(),
   }).index("by_token", ["tokenIdentifier"]),
 

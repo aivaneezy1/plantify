@@ -41,9 +41,11 @@ export const userTable = mutation({
       firstName: args.firstName,
       lastName: args.lastName,
       email: args.email,
-      imagesUrl: [""],
+      imagesUrl: [],
       apiCallTotal: args.apiCallTotal,
       apiCallRemaining: args.apiCallRemaining,
+      transactionsTimeStamp: [],
+      bits: [],
       tokenIdentifier: args.tokenIdentifier,
     });
 
@@ -55,7 +57,6 @@ export const updateUsersTable = internalMutation({
   args: { id: v.id("users"), images: v.array(v.string()) },
   handler: async (ctx, args) => {
     const userRecord = await ctx.db.get(args.id);
-
     // Check if the imagesUrl already exists, otherwise default to an empty array
     const currentImages = userRecord?.imagesUrl || [];
 
@@ -69,12 +70,25 @@ export const updateUsersTable = internalMutation({
 });
 
 
+/**
+ Update User
+ -status from Trial -> Pro once they acquired a bits
+ - Total Api call the user have
+ - Bits acquired for every transactions made.
+
+ */
 export const updateUserStatus = mutation({
-   args: { userId: v.id("users"), status:v.string(), apiCallTotal:v.number() },
+   args: { userId: v.id("users"), status:v.string(), apiCallTotal:v.number(),transactionsTimeStamp:v.string(),bits:v.number() },
   handler: async (ctx, args) => {
+    const userRecord = await ctx.db.get(args.userId);
+    const prevTotalApiCall = userRecord?.apiCallTotal || 0
+    const timestamps = userRecord?.transactionsTimeStamp || []
+    const bits = userRecord?.bits || []
     await ctx.db.patch(args.userId, {
         status: args.status,
-        apiCallTotal: args.apiCallTotal
+        apiCallTotal: prevTotalApiCall + args.apiCallTotal,
+        transactionsTimeStamp: [args.transactionsTimeStamp, ...timestamps, ],
+        bits: [args.bits, ...bits, ]
     })
   }
 })

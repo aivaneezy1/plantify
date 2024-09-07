@@ -25,8 +25,10 @@ function API_KEY(api_key: string) {
 const s3 = new S3Client({
   region: "eu-north-1",
   credentials: {
-    accessKeyId: API_KEY( process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID || ""),
-    secretAccessKey:  API_KEY( process.env.NEXT_PUBLIC_AWS_S3_SECRET_ACCESS_KEY || ""),
+    accessKeyId: API_KEY(process.env.NEXT_PUBLIC_AWS_S3_ACCESS_KEY_ID || ""),
+    secretAccessKey: API_KEY(
+      process.env.NEXT_PUBLIC_AWS_S3_SECRET_ACCESS_KEY || ""
+    ),
   },
 });
 
@@ -52,7 +54,7 @@ function base64toBlob(base64String: string, contentType: string = "") {
 
 export const sketchImageTable = mutation({
   args: {
-   userTableId: v.id("users"),
+    userTableId: v.id("users"),
     userId: v.string(),
     text: v.string(),
     image: v.string(),
@@ -72,28 +74,28 @@ export const sketchImageTable = mutation({
     // console.log("image", args.image)
     // ID of a document in the _id field
     const retrievedSketch = await ctx.db.get(newSketchImage);
-   try{
-       await ctx.scheduler.runAfter(0, internal.createImage.generateSketchImage, {
-        userTableId: args.userTableId,
-        text: args.text,
-        image: args.image,
-        sketchId: retrievedSketch?._id!,
-      });
-   }catch(err){
-    console.log(err);
-   }
+    try {
+      await ctx.scheduler.runAfter(
+        0,
+        internal.createImage.generateSketchImage,
+        {
+          userTableId: args.userTableId,
+          text: args.text,
+          image: args.image,
+          sketchId: retrievedSketch?._id!,
+        }
+      );
+    } catch (err) {
+      throw new Error((err as { message: string }).message);
+    }
 
     return newSketchImage;
   },
-
-  
 });
-
-
 
 export const generateSketchImage = internalAction({
   args: {
-    userTableId:v.id("users"),
+    userTableId: v.id("users"),
     text: v.string(),
     image: v.string(),
     sketchId: v.id("imageSketch"),
@@ -133,12 +135,11 @@ export const generateSketchImage = internalAction({
         ContentType: "image/png",
       };
 
-           // Upload the image to aws s3 bucket
+      // Upload the image to aws s3 bucket
       await s3.send(new PutObjectCommand(uploadParams));
 
       // // Construct the URL to access the image
-       const imageUrl = `https://${API_KEY(process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || "")}.s3.eu-north-1.amazonaws.com/${path}`;
-
+      const imageUrl = `https://${API_KEY(process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || "")}.s3.eu-north-1.amazonaws.com/${path}`;
 
       if (res.status === 200) {
         await ctx.scheduler.runAfter(
@@ -151,12 +152,12 @@ export const generateSketchImage = internalAction({
         );
         // Update the user table with the image generated.
         await ctx.scheduler.runAfter(0, internal.createUser.updateUsersTable, {
-            id:args.userTableId,
-            images: [imageUrl]
-        })
+          id: args.userTableId,
+          images: [imageUrl],
+        });
       }
     } catch (err) {
-      console.log(err);
+      throw new Error((err as { message: string }).message);
     }
   },
 });
@@ -185,9 +186,6 @@ export const getImage = query({
     return { success: true, image: images };
   },
 });
-
-
-
 
 // Getting all images of the table
 export const getAllImage = query({

@@ -31,13 +31,13 @@ const SketchComponent = () => {
   const [sketchId, setSketchId] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(false);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-
+  const [getIdLocalStorage, setGetIdLocalStorage] =  useState<Id<"users"> | null>(null);
 
   // Getting the user id of the user
   const {user} = useUser();
   const id: string | undefined = user?.id || "";
   // Getting the userIdTable of the users using data context
-  const {userTableId} = useContext(DataContext);
+
   // Creating table
   const createSketch = useMutation(api.createImage.sketchImageTable);
 
@@ -58,8 +58,7 @@ const SketchComponent = () => {
     canvasRef.current?.clearCanvas();
   };
 
-    console.log("id", id);
-      console.log("userTableId", userTableId) 
+
 
   const handleDownload = (imageUrl: string) => {
     const link = document.createElement("a");
@@ -67,6 +66,26 @@ const SketchComponent = () => {
     link.download = "sketch.png";
     link.click();
   };
+
+  
+
+  useEffect(() => {
+    // Set loading to false if the response has a success flag or if there's no data
+    if (getImage && getImage.image.length > 0) {
+      setLoading(false);
+    }
+  }, [getImage]); 
+
+
+     // Getting data from local Storage
+  useEffect(() => {
+    const tableId = window.localStorage.getItem("tableId");
+    if (tableId) {
+      setGetIdLocalStorage(tableId as Id<"users">); // Type assertion
+    }
+  }, []);
+
+
 
   const handleSubmitSketch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -110,7 +129,7 @@ const SketchComponent = () => {
 
       //Send the promp text and image  url to the CreateImage table
       const newlyCreatedSketch: Id<"imageSketch"> = await createSketch({
-        userTableId: userTableId!,
+        userTableId: getIdLocalStorage!,
         userId: id,
         text: inputSketch,
         image: imageUrl,
@@ -125,13 +144,6 @@ const SketchComponent = () => {
     } finally {
     }
   };
-
-  useEffect(() => {
-    // Set loading to false if the response has a success flag or if there's no data
-    if (getImage && getImage.image.length > 0) {
-      setLoading(false);
-    }
-  }, [getImage]); 
 
   return (
     <div className="flex flex-col sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
