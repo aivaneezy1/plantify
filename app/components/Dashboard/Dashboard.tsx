@@ -1,21 +1,52 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { serialize } from "v8";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import AlertApiCallComponent from "../AlertApiCall";
+import { ToastContainer, toast } from "react-toastify";
+import AlertSuccessPurchase from "../AlertSuccessPurchase";
+
+import { useSearchParams } from "next/navigation";
 const DashboardComponent = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   let profileUrL: string | undefined;
   if (user?.imageUrl) {
     profileUrL = user.imageUrl;
   }
-
   const getUserData = useQuery(api.createUser.currentUser, {});
-
   const lastApiCallMade: string | undefined = getUserData?.apiUsageTimeStamp[0];
+  const searchParams = useSearchParams();
+  const payment = searchParams.get("payment");
+
+  useEffect(() => {
+    // Show the toast when payment=success is in the URL query
+    if (payment === "true") {
+      toast.success("Payment Completed Successfully! 🦄", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else if (payment === "false") {
+      toast.error("Payment Failed. Please try again", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }, [payment]);
 
   return (
     <>
@@ -39,7 +70,6 @@ const DashboardComponent = () => {
                 <h2 className="bg-[#434C5E] p-1 rounded-lg">{user?.id}</h2>
               </div>
             </div>
-      
           </div>
         ) : (
           <div>
@@ -70,6 +100,7 @@ const DashboardComponent = () => {
             <span>Total Api Call</span>
           </div>
         </div>
+        <AlertSuccessPurchase />
       </div>
     </>
   );

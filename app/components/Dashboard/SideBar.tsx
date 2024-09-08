@@ -49,14 +49,7 @@ const Sidebar = () => {
           Billing
         </div>
       </Link>
-      <Link href="/dashboard/settings">
-        <div
-          className={`p-4 rounded-lg cursor-pointer ${selectedItem === "Settings" ? "bg-gray-500 font-bold" : "hover:bg-gray-400 hover:font-bold"}`}
-          onClick={() => handleItemClick("Settings")}
-        >
-          Settings
-        </div>
-      </Link>
+     
     </>
   );
 

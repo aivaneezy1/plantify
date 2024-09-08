@@ -3,7 +3,7 @@ import { api, internal } from "./_generated/api";
 import Stripe from "stripe";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
-import {format} from "date-fns"
+import { format } from "date-fns";
 
 // Generate a checkout Link for the user
 export const pay = action({
@@ -13,7 +13,6 @@ export const pay = action({
   handler: async (ctx, args) => {
     const clerkUser = await ctx.auth.getUserIdentity();
     const dbUser = await ctx.runQuery(api.createUser.currentUser, {});
-
 
     if (!dbUser || !clerkUser) {
       throw new Error("User not authenticated");
@@ -56,19 +55,21 @@ export const pay = action({
         },
         customer_email: clerkUser.email,
         mode: "payment",
-        success_url: `http://localhost:3000/dashboard`,
-        cancel_url: `${redirectDomain}`,
+        success_url: `http://localhost:3000/dashboard?payment=true`,
+        cancel_url: `http://localhost:3000/dashboard?payment=false`,
       });
 
-    return session.url;
+    
+    return {
+      url: session.url,
+      success: true,
+    };
   },
 });
 
-
-
 type MetaData = {
   userId: Id<"users">;
-}; 
+};
 
 export const fulfill = internalAction({
   args: { signature: v.string(), payload: v.string() },
@@ -90,21 +91,25 @@ export const fulfill = internalAction({
         metadata: MetaData;
       };
       if (event.type === "checkout.session.completed") {
-        console.log("completed event",completedEvent);
+  
         // Extract userId from metadata
         const userId = completedEvent.metadata.userId;
-          // Extract the total amount converted in cents from metadata
-        const totalApiCall = (completedEvent.amount_total! / 2) || 0
-        const totalBitsAcquired = (completedEvent.amount_total! / 2) || 0
+        // Extract the total amount converted in cents from metadata
+        const totalApiCall = completedEvent.amount_total! / 2 || 0;
+        const totalBitsAcquired = completedEvent.amount_total! / 2 || 0;
+
         // Extract the time stamp
         const transactionTimestamp = completedEvent.created;
-        const formattedDate = format(new Date(transactionTimestamp * 1000), "dd/MM/yy, HH:mm:ss")
+        const formattedDate = format(
+          new Date(transactionTimestamp * 1000),
+          "dd/MM/yy, HH:mm:ss"
+        );
         await ctx.runMutation(api.createUser.updateUserStatus, {
           userId: userId,
           status: "Pro",
           apiCallTotal: totalApiCall,
-          transactionsTimeStamp:formattedDate,
-          bits: totalBitsAcquired
+          transactionsTimeStamp: formattedDate,
+          bits: totalBitsAcquired,
         });
       }
 

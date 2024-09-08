@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import {
   FormControl,
   InputLabel,
@@ -10,11 +10,18 @@ import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import Router, { useRouter } from "next/navigation";
-
+import AlertSuccessPurchase from "../AlertSuccessPurchase";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSearchParams } from 'next/navigation'
 const BillingComponent = () => {
   const [inputBits, setInputBits] = useState<string>("");
   const router = useRouter();
+ 
   const getUserData = useQuery(api.createUser.currentUser, {});
+
+  
+  
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Allow only numeric values
@@ -34,28 +41,34 @@ const BillingComponent = () => {
 
   // Buy bits logic
   const buyBits = useAction(api.stripe.pay);
- 
+
   const handleBuyBits = async () => {
     // getting the session URL for the Checkout.
-    const url = await buyBits({
+    const resultUrl = await buyBits({
       amount: parseInt(inputBits),
     });
-    if (!url) {
+    if (!resultUrl || !resultUrl.url) {
       return;
     }
-    router.push(url);
+
+    if (resultUrl.success) {
+      router.push(resultUrl.url);
+    
+    }
   };
-  console.log(inputBits);
+
   return (
-    <div className="flex flex-grow-0 justify-center items-center text-2xl w-full mt-20 sm:ml-10"> 
+    <div className="flex flex-grow-0 justify-center items-center text-2xl w-full mt-20 sm:ml-10">
       {/*Container for both side   */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-           {/*Left side dev */}
+        {/*Left side dev */}
         <div className="bg-[#434C5E] text-white p-8 rounded-lg max-h-[400px]  flex-grow-0">
           <h2>Bits</h2>
           <hr className="my-4 border-white" />{" "}
           {/* Border at bottom of Credits */}
-          <h2 className="font-bold text-3xl">{getUserData?.apiCallRemaining}</h2>
+          <h2 className="font-bold text-3xl">
+            {getUserData?.apiCallRemaining}
+          </h2>
           <hr className="mt-4 border-white" /> {/* Border at bottom of 800 */}
           <h2 className="mt-4">Purchase bits to generate images</h2>
           <div className="relative mt-2 w-full">
@@ -85,7 +98,7 @@ const BillingComponent = () => {
           </button>
         </div>
 
-         {/*right side dev */}
+        {/*right side dev */}
         <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5">
           <h2>Payments</h2>
           <hr className="my-4 border-white" />{" "}
@@ -110,6 +123,8 @@ const BillingComponent = () => {
           </div>
         </div>
       </div>
+
+  
     </div>
   );
 };

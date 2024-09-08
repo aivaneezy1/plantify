@@ -115,9 +115,10 @@ export const updateUserStatus = mutation({
   handler: async (ctx, args) => {
     const userRecord = await ctx.db.get(args.userId);
     const prevTotalApiCall: number = userRecord?.apiCallTotal || 0;
-    const totalApiRemaining: number = prevTotalApiCall + args.apiCallTotal - 5;
+    const totalApiRemaining: number = prevTotalApiCall + args.apiCallTotal;
     const timestamps = userRecord?.transactionsTimeStamp || [];
     const bits = userRecord?.bits || [];
+   
     await ctx.db.patch(args.userId, {
       status: args.status,
       apiCallTotal: prevTotalApiCall + args.apiCallTotal,
@@ -147,8 +148,7 @@ export const currentUser = query({
       .query("users")
       .withIndex("by_token", (q) => q.eq("tokenIdentifier", tokenSlice!))
       .unique();
-    console.log("user", user)
-     console.log("getCurrentUser", getCurrentUser)
+
 
     // Handle the case where no user is found
     if (!user) {
