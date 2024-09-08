@@ -12,11 +12,12 @@ export default function Home() {
   const storeUser = useMutation(api.createUser.userTable);
   const [hasStoredUser, setHasStoredUser] = useState<Boolean>(false);
   const { isLoaded, isSignedIn, user } = useUser();
+  const {getIdLocalStorage,setGetIdLocalStorage } = useContext(DataContext);
 
   let firstName: string | undefined = user?.firstName || "";
   let lastName: string | undefined = user?.lastName || "";
   let email: string | undefined = user?.primaryEmailAddress?.emailAddress || "";
-  let apiCallTotal: number = 0;
+  let apiCallTotal: number = 100;
   let apiCallRemaining: number = 100;
   let id: string | undefined = user?.id || "";
   let image: string[] = [""];
@@ -51,6 +52,8 @@ export default function Home() {
     handleStoreUser();
     
   }, [isLoaded, isSignedIn, id, hasStoredUser, storeUser]);
+
+   
 
   return (
     <div>

@@ -12,8 +12,8 @@ import { Id } from "@/convex/_generated/dataModel"; // Assuming this is correct 
 interface DatiContextType {
     selectedItem: string;
     setSelectedItem: Dispatch<SetStateAction<string>>;
-    userTableId: Id<"users"> | null;  // Adjusting this to be nullable for the initial state
-    setUserTableId: Dispatch<SetStateAction<Id<"users"> | null>>;  // Adjust the Dispatch to handle the correct type
+    getIdLocalStorage: Id<"users"> | null;  // Adjusting this to be nullable for the initial state
+    setGetIdLocalStorage: Dispatch<SetStateAction<Id<"users"> | null>>;  // Adjust the Dispatch to handle the correct type
 }
 
 // Default context value
@@ -22,8 +22,8 @@ const defaultContextValue: DatiContextType = {
     setSelectedItem: () => {
         throw new Error("setSelectedItem function must be overridden");
     },
-    userTableId: null,  // Set the default value to null since we don't have an ID initially
-    setUserTableId: () => {
+    getIdLocalStorage: null,  // Set the default value to null since we don't have an ID initially
+    setGetIdLocalStorage: () => {
         throw new Error("setUserTableId function must be overridden");
     },
 };
@@ -41,8 +41,8 @@ const DataContextProvider = ({ children }: { children: React.ReactNode }) => {
             value={{
                 selectedItem,
                 setSelectedItem,
-                userTableId,
-                setUserTableId,
+                getIdLocalStorage: userTableId,
+                setGetIdLocalStorage: setUserTableId,
             }}
         >
             {children}

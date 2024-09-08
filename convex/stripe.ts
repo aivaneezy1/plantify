@@ -13,6 +13,8 @@ export const pay = action({
   handler: async (ctx, args) => {
     const clerkUser = await ctx.auth.getUserIdentity();
     const dbUser = await ctx.runQuery(api.createUser.currentUser, {});
+
+
     if (!dbUser || !clerkUser) {
       throw new Error("User not authenticated");
     }
@@ -44,7 +46,7 @@ export const pay = action({
               1 euro = 100 cents
               10 euro = 1000 cents
               */
-              unit_amount: args.amount * 50,
+              unit_amount: args.amount * 100,
             },
             quantity: 1,
           },
@@ -54,7 +56,7 @@ export const pay = action({
         },
         customer_email: clerkUser.email,
         mode: "payment",
-        success_url: `${redirectDomain}`,
+        success_url: `http://localhost:3000/dashboard`,
         cancel_url: `${redirectDomain}`,
       });
 
@@ -87,13 +89,13 @@ export const fulfill = internalAction({
       const completedEvent = event.data.object as Stripe.Checkout.Session & {
         metadata: MetaData;
       };
-      console.log("completed event", completedEvent);
       if (event.type === "checkout.session.completed") {
+        console.log("completed event",completedEvent);
         // Extract userId from metadata
         const userId = completedEvent.metadata.userId;
           // Extract the total amount converted in cents from metadata
-        const totalApiCall = completedEvent.amount_total || 0
-        const totalBitsAcquired = completedEvent.amount_total || 0
+        const totalApiCall = (completedEvent.amount_total! / 2) || 0
+        const totalBitsAcquired = (completedEvent.amount_total! / 2) || 0
         // Extract the time stamp
         const transactionTimestamp = completedEvent.created;
         const formattedDate = format(new Date(transactionTimestamp * 1000), "dd/MM/yy, HH:mm:ss")

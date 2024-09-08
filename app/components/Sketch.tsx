@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useRef, FormEvent, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useRef,
+  FormEvent,
+  useEffect,
+  useContext,
+} from "react";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
@@ -31,10 +37,12 @@ const SketchComponent = () => {
   const [sketchId, setSketchId] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(false);
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
-  const [getIdLocalStorage, setGetIdLocalStorage] =  useState<Id<"users"> | null>(null);
+
+  // table id store from local storage
+   const [getIdLocalStorage, setGetIdLocalStorage] = useState<Id<"users"> | null>(null); 
 
   // Getting the user id of the user
-  const {user} = useUser();
+  const { user } = useUser();
   const id: string | undefined = user?.id || "";
   // Getting the userIdTable of the users using data context
 
@@ -58,8 +66,6 @@ const SketchComponent = () => {
     canvasRef.current?.clearCanvas();
   };
 
-
-
   const handleDownload = (imageUrl: string) => {
     const link = document.createElement("a");
     link.href = imageUrl;
@@ -67,15 +73,12 @@ const SketchComponent = () => {
     link.click();
   };
 
-  
-
   useEffect(() => {
     // Set loading to false if the response has a success flag or if there's no data
     if (getImage && getImage.image.length > 0) {
       setLoading(false);
     }
-  }, [getImage]); 
-
+  }, [getImage]);
 
      // Getting data from local Storage
   useEffect(() => {
@@ -84,8 +87,6 @@ const SketchComponent = () => {
       setGetIdLocalStorage(tableId as Id<"users">); // Type assertion
     }
   }, []);
-
-
 
   const handleSubmitSketch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -133,7 +134,6 @@ const SketchComponent = () => {
         userId: id,
         text: inputSketch,
         image: imageUrl,
-     
       });
       setSketchId(newlyCreatedSketch);
 
@@ -144,6 +144,8 @@ const SketchComponent = () => {
     } finally {
     }
   };
+
+  
 
   return (
     <div className="flex flex-col sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
@@ -219,8 +221,10 @@ const SketchComponent = () => {
               key={idx}
               className="flex flex-col gap-4 items-center w-full  "
             >
-              <div className="flex items-start  relative" >
-              <h2 className="text-2xl font-bold text-left mb-5">{data.text}</h2>
+              <div className="flex items-start  relative">
+                <h2 className="text-2xl font-bold text-left mb-5">
+                  {data.text}
+                </h2>
               </div>
               <div className=" ">
                 <Image
@@ -252,14 +256,14 @@ const SketchComponent = () => {
             </div>
           ))
         ) : (
-           <div className="flex justify-center flex-col items-center text-white text-center gap-2">
-          <Image
-          src="https://aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com/loading/spike.gif"
-          alt="spike"
-          width={500}
-          height={500}
-          className="rounded-lg"
-          />
+          <div className="flex justify-center flex-col items-center text-white text-center gap-2">
+            <Image
+              src="https://aivaneezy-ai-bucket.s3.eu-north-1.amazonaws.com/loading/spike.gif"
+              alt="spike"
+              width={500}
+              height={500}
+              className="rounded-lg"
+            />
             <h2 className="font-semibold text-1xl">No images generated</h2>
           </div>
         )}

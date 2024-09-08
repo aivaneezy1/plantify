@@ -8,10 +8,13 @@ import {
 } from "@mui/material";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
 import Router, { useRouter } from "next/navigation";
+
 const BillingComponent = () => {
   const [inputBits, setInputBits] = useState<string>("");
-
+  const router = useRouter();
+  const getUserData = useQuery(api.createUser.currentUser, {});
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Allow only numeric values
@@ -31,7 +34,7 @@ const BillingComponent = () => {
 
   // Buy bits logic
   const buyBits = useAction(api.stripe.pay);
-  const router = useRouter();
+ 
   const handleBuyBits = async () => {
     // getting the session URL for the Checkout.
     const url = await buyBits({
@@ -42,15 +45,17 @@ const BillingComponent = () => {
     }
     router.push(url);
   };
-
+  console.log(inputBits);
   return (
-    <div className="flex justify-center items-center text-2xl w-full mt-20 sm:ml-10">
+    <div className="flex flex-grow-0 justify-center items-center text-2xl w-full mt-20 sm:ml-10"> 
+      {/*Container for both side   */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="bg-[#434C5E] text-white p-8 rounded-lg">
+           {/*Left side dev */}
+        <div className="bg-[#434C5E] text-white p-8 rounded-lg max-h-[400px]  flex-grow-0">
           <h2>Bits</h2>
           <hr className="my-4 border-white" />{" "}
           {/* Border at bottom of Credits */}
-          <h2 className="font-bold text-3xl">800</h2>
+          <h2 className="font-bold text-3xl">{getUserData?.apiCallRemaining}</h2>
           <hr className="mt-4 border-white" /> {/* Border at bottom of 800 */}
           <h2 className="mt-4">Purchase bits to generate images</h2>
           <div className="relative mt-2 w-full">
@@ -80,18 +85,27 @@ const BillingComponent = () => {
           </button>
         </div>
 
+         {/*right side dev */}
         <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5">
           <h2>Payments</h2>
           <hr className="my-4 border-white" />{" "}
           <div className="flex flex-row justify-between items-center ">
             <div className="flex flex-col gap-5">
               <h2>Date</h2>
-              <span className="text-gray-300">01/09/24, 10:59:56</span>
+              {getUserData?.transactionsTimeStamp.map((item, indx) => (
+                <div key={indx}>
+                  <span className="text-gray-300">{item}</span>
+                </div>
+              ))}
             </div>
 
             <div className="flex flex-col gap-5">
               <h2>Bits</h2>
-              <span className="text-gray-300">1,000</span>
+              {getUserData?.bits.map((item, indx) => (
+                <div key={indx}>
+                  <span className="text-gray-300">{item}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

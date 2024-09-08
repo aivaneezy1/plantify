@@ -8,6 +8,7 @@ import {
 import { internal } from "./_generated/api";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Id } from "./_generated/dataModel";
+import {format} from "date-fns"
 // STABLE API key
 function stableApi() {
   let apikey: string | undefined;
@@ -150,11 +151,24 @@ export const generateSketchImage = internalAction({
             result: imageUrl,
           }
         );
-        // Update the user table with the image generated.
-        await ctx.scheduler.runAfter(0, internal.createUser.updateUsersTable, {
-          id: args.userTableId,
-          images: [imageUrl],
-        });
+
+        /*
+          Update the user table with images.
+          Update the create date of the images
+          Update Api call Usage 
+          */
+          const formmatedDate = format(new Date(Date.now() * 1000), "dd/MM/yy, HH:mm:ss") 
+          await ctx.scheduler.runAfter(
+          0,
+          internal.createUser.updateUsersTable,
+          {
+            id: args.userTableId,
+            images: [imageUrl],
+              apiUsage: 1,
+           apiCallRemaining: 10,
+            apiUsageTimeStamp: formmatedDate
+          }
+        );
       }
     } catch (err) {
       throw new Error((err as { message: string }).message);
