@@ -15,7 +15,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import Loading from "../utils/Loading";
 import { useUser } from "@clerk/nextjs";
-import AlertApiCallComponent from "./AlertApiCall";
+import AlertApiCallComponent from "./Alert/AlertApiCall";
 
 const PromptComponent = () => {
   const [inputPrompt, setInputPrompt] = useState<string>("");

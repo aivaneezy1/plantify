@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import React, {useContext} from "react";
-import { DataContext } from "../Context/Provider";
+import { DataContext } from "../../Context/Provider";
 
 interface style {}
 

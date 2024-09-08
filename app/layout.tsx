@@ -8,6 +8,7 @@ import DataContextProvider from "./Context/Provider";
 import { ClerkProvider, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
 import Loading from "./utils/Loading";
 import { dark } from "@clerk/themes";
+import { CrispProvider } from "./components/Crisp-Provder";
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -26,6 +27,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
+      <CrispProvider/>
         <body>
           <ClerkLoading>
             <div className="flex justify-center items-center h-screen ">

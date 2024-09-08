@@ -7,7 +7,7 @@ import { serialize } from "v8";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ToastContainer, toast } from "react-toastify";
-import AlertSuccessPurchase from "../AlertSuccessPurchase";
+import AlertSuccessPurchase from "../Alert/AlertSuccessPurchase";
 
 import { useSearchParams } from "next/navigation";
 const DashboardComponent = () => {

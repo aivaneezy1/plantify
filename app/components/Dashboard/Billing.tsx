@@ -10,7 +10,7 @@ import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import Router, { useRouter } from "next/navigation";
-import AlertSuccessPurchase from "../AlertSuccessPurchase";
+import AlertSuccessPurchase from "../Alert/AlertSuccessPurchase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from 'next/navigation'

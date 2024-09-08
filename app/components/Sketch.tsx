@@ -16,7 +16,7 @@ import Loading from "../utils/Loading";
 import { Id } from "@/convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { DataContext } from "../Context/Provider";
-import AlertApiCallComponent from "./AlertApiCall";
+import AlertApiCallComponent from "./Alert/AlertApiCall";
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
   borderRadius: "0.25rem",
