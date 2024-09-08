@@ -16,6 +16,7 @@ import Loading from "../utils/Loading";
 import { Id } from "@/convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { DataContext } from "../Context/Provider";
+import AlertApiCallComponent from "./AlertApiCall";
 const styles: React.CSSProperties = {
   border: "0.0625rem solid #9c9c9c",
   borderRadius: "0.25rem",
@@ -56,6 +57,9 @@ const SketchComponent = () => {
   const getImage = useQuery(api.createImage.getImage, {
     sketchId: sketchId || "",
   });
+
+    // getting data of the current user
+   const getUserData = useQuery(api.createUser.currentUser, {});
 
   const toggleEraser = () => {
     setIsErasing(!isErasing);
@@ -201,12 +205,16 @@ const SketchComponent = () => {
               </button>
             </div>
           </div>
-          <button
+
+          {getUserData?.apiCallRemaining && getUserData.apiCallRemaining > 0 ? (
+              <button
             type="submit"
             className=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full "
           >
             Generate
           </button>
+          ): <AlertApiCallComponent style=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full"/>}
+        
         </form>
       </div>
       <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6   relative">

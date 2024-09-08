@@ -25,7 +25,7 @@ const Hero = () => {
           
         }
       }catch(err){
-        console.log(err);
+        throw new Error(`message: ${err}`);
       }
     }
     handleGetData();

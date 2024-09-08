@@ -5,6 +5,7 @@ import Image from "next/image";
 import { serialize } from "v8";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import AlertApiCallComponent from "../AlertApiCall";
 const DashboardComponent = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   let profileUrL: string | undefined;
@@ -38,6 +39,7 @@ const DashboardComponent = () => {
                 <h2 className="bg-[#434C5E] p-1 rounded-lg">{user?.id}</h2>
               </div>
             </div>
+      
           </div>
         ) : (
           <div>

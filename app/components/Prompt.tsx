@@ -15,6 +15,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import Loading from "../utils/Loading";
 import { useUser } from "@clerk/nextjs";
+import AlertApiCallComponent from "./AlertApiCall";
 
 const PromptComponent = () => {
   const [inputPrompt, setInputPrompt] = useState<string>("");
@@ -29,14 +30,17 @@ const PromptComponent = () => {
   const { user } = useUser();
   // asssinging user id to string id
   const id: string | undefined = user?.id || "";
-
   // Creating data in the convex table
   const createSketch = useMutation(api.createSketch.sketchTable);
-  // Getting data in the convex table
+  
   // Query to get the image data using the sketchId
   const getImageData = useQuery(api.createSketch.getImage, {
     sketchId: sketchId || "",
   });
+
+  // getting data of the current user
+   const getUserData = useQuery(api.createUser.currentUser, {});
+
 
   // const getImageData = useQuery(api.createSketch.getSketchData, {});
 
@@ -142,12 +146,14 @@ const PromptComponent = () => {
               <option value="1080x1080">1080x1080</option>
             </select>
 
-            <button
+           {getUserData?.apiCallRemaining && getUserData?.apiCallRemaining  > 0 ? (
+             <button
               type="submit"
               className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 hover:from-blue-500 hover:via-blue-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-bold  transition duration-300"
             >
               Generate
             </button>
+           ) : <AlertApiCallComponent style="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 hover:from-blue-500 hover:via-blue-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-bold  transition duration-300 w-full"/> }
           </div>
         </form>
       </div>
