@@ -1,5 +1,12 @@
 "use client";
-import React, { useState, useRef, FormEvent, ChangeEvent, useContext, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  FormEvent,
+  ChangeEvent,
+  useContext,
+  useEffect,
+} from "react";
 import { DataContext } from "../Context/Provider";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
@@ -8,6 +15,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import Loading from "../utils/Loading";
 import { useUser } from "@clerk/nextjs";
+import AlertApiCallComponent from "./Alert/AlertApiCall";
 
 const PromptComponent = () => {
   const [inputPrompt, setInputPrompt] = useState<string>("");
@@ -15,13 +23,28 @@ const PromptComponent = () => {
   const [inputNumber, setInputNumber] = useState<string>("1");
   const [inputWidth, setInputWidth] = useState<string>("800");
   const [inputHeight, setInputHeight] = useState<string>("600");
-  const [getIdLocalStorage, setGetIdLocalStorage] =  useState<Id<"users"> | null>(null);
+
+  // table id store from local storage
+  const [getIdLocalStorage, setGetIdLocalStorage] =
+    useState<Id<"users"> | null>(null);
   const { user } = useUser();
   // asssinging user id to string id
   const id: string | undefined = user?.id || "";
+  // Creating data in the convex table
+  const createSketch = useMutation(api.createSketch.sketchTable);
+  
+  // Query to get the image data using the sketchId
+  const getImageData = useQuery(api.createSketch.getImage, {
+    sketchId: sketchId || "",
+  });
+
+  // getting data of the current user
+   const getUserData = useQuery(api.createUser.currentUser, {});
 
 
-   // Getting data from local Storage
+   //const getImageData = useQuery(api.createSketch.getSketchData, {});
+
+  // Getting data from local Storage
   useEffect(() => {
     const tableId = window.localStorage.getItem("tableId");
     if (tableId) {
@@ -29,17 +52,6 @@ const PromptComponent = () => {
     }
   }, []);
 
- 
-  // Creating data in the convex table
-  const createSketch = useMutation(api.createSketch.sketchTable);
-  // Getting data in the convex table
-  // Query to get the image data using the sketchId
-  const getImageData = useQuery(api.createSketch.getImage, {
-    sketchId: sketchId || "",
-  });
-
-  // const getImageData = useQuery(api.createSketch.getSketchData, {});
- 
   // Function to handle width and height changes
   const handleDimensionChanges = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
@@ -48,7 +60,6 @@ const PromptComponent = () => {
     setInputHeight(newHeight);
   };
 
-    
   // Function to download images as pdf
   const handleDownload = async (imageUrl: string) => {
     try {
@@ -70,7 +81,7 @@ const PromptComponent = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url); // Free up memory
     } catch (error) {
-      console.error("Error downloading image:", error);
+      throw new Error((error as { message: string }).message);
     }
   };
 
@@ -78,7 +89,6 @@ const PromptComponent = () => {
     e.preventDefault();
 
     try {
-      
       // Create the sketch and get the new sketch ID
       const newSketch: Id<"sketch"> = await createSketch({
         userTableId: getIdLocalStorage!,
@@ -90,18 +100,12 @@ const PromptComponent = () => {
         numberOfSamples: parseInt(inputNumber),
       });
       setSketchId(newSketch);
-
       setInputPrompt("");
-      setInputNumber("");
-      setInputWidth("");
-      setInputHeight("");
     } catch (err) {
-      console.error("Error creating sketch:", err);
+      throw new Error((err as { message: string }).message);
     }
   };
-  // console.log("inputWidth", inputWidth);
-  // console.log("inputHeight", inputHeight);
-  // console.log("sketch", getImageData);
+
   return (
     <div className="flex flex-col md:flex-row mt-20">
       <div className="md:w-1/2 p-4">
@@ -142,12 +146,14 @@ const PromptComponent = () => {
               <option value="1080x1080">1080x1080</option>
             </select>
 
-            <button
+           {getUserData?.apiCallRemaining && getUserData?.apiCallRemaining  > 0 ? (
+             <button
               type="submit"
               className="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 hover:from-blue-500 hover:via-blue-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-bold  transition duration-300"
             >
               Generate
             </button>
+           ) : <AlertApiCallComponent style="bg-gradient-to-r from-blue-400 via-blue-500 to-purple-600 hover:from-blue-500 hover:via-blue-600 hover:to-purple-700 text-white py-3 px-6 rounded-lg font-bold  transition duration-300 w-full"/> }
           </div>
         </form>
       </div>
@@ -156,10 +162,8 @@ const PromptComponent = () => {
         {getImageData && getImageData.length > 0 ? (
           getImageData.map((data, index) => (
             <div key={index}>
-              <h2 className="text-3xl font-bold text-center mb-4">
-                {data.text}
-              </h2>
-              <div className="flex flex-wrap gap-6 justify-center">
+          
+              <div className="grid md:grid-cols-2 grid-cols-1 gap-5 justify-center">
                 {data.images.length > 0 &&
                   data.images.map((src, idx) => (
                     <div key={idx} className="relative mb-6">
@@ -168,9 +172,9 @@ const PromptComponent = () => {
                           <Image
                             src={src}
                             alt="Image"
-                            width={300}
-                            height={300}
-                            className="border border-gray-300 rounded-lg shadow-lg object-cover"
+                            width={600}
+                            height={600}
+                            className="border border-gray-300 rounded-lg shadow-lg object-cover transform transition hover:scale-105 duration-300 cursor-pointer"
                           />
                           <div className="flex flex-row justify-center items-center mt-2 gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer">
                             <div>
@@ -193,7 +197,7 @@ const PromptComponent = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex justify-center flex-col items-center text-white text-center mt-10">
+                        <div className="flex  flex-col items-center justify-center text-white text-center mt-10">
                           <Loading />
                           <h2>Loading...</h2>
                         </div>

@@ -18,12 +18,17 @@ export default defineSchema({
     height: v.string(),
   }),
   users: defineTable({
+    status:v.string(),
     firstName: v.string(),
     lastName: v.string(),
     email: v.string(),
-     imagesUrl: v.array(v.string()),
+    imagesUrl: v.array(v.string()),
+    apiUsage: v.number(),
     apiCallTotal: v.number(),
     apiCallRemaining: v.number(),
+    apiUsageTimeStamp: v.array(v.string()),
+    transactionsTimeStamp: v.array(v.string()),
+    bits: v.array(v.number()),
     tokenIdentifier: v.string(),
   }).index("by_token", ["tokenIdentifier"]),
 

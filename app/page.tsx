@@ -12,17 +12,15 @@ export default function Home() {
   const storeUser = useMutation(api.createUser.userTable);
   const [hasStoredUser, setHasStoredUser] = useState<Boolean>(false);
   const { isLoaded, isSignedIn, user } = useUser();
-  // using context to get the user table id
-  const { setUserTableId } = useContext(DataContext);
+  const {getIdLocalStorage,setGetIdLocalStorage } = useContext(DataContext);
 
   let firstName: string | undefined = user?.firstName || "";
   let lastName: string | undefined = user?.lastName || "";
   let email: string | undefined = user?.primaryEmailAddress?.emailAddress || "";
-  let apiCallTotal: number = 0;
+  let apiCallTotal: number = 100;
   let apiCallRemaining: number = 100;
   let id: string | undefined = user?.id || "";
   let image: string[] = [""];
-
 
   useEffect(() => {
     const handleStoreUser = async () => {
@@ -31,6 +29,7 @@ export default function Home() {
         try {
           // First, check if the user already exists in the database
           const existingUser: Id<"users"> = await storeUser({
+            status: "Trial",
             firstName,
             lastName,
             email,
@@ -51,9 +50,10 @@ export default function Home() {
     };
 
     handleStoreUser();
+    
   }, [isLoaded, isSignedIn, id, hasStoredUser, storeUser]);
 
-
+   
 
   return (
     <div>

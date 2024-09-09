@@ -7,8 +7,8 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { parseArgs } from "util";
-// AWS S3 Credentials
+import {format} from "date-fns"
+
 
 function API_KEY(api_key: string) {
   let apikey: string | undefined;
@@ -16,6 +16,7 @@ function API_KEY(api_key: string) {
   return apikey;
 }
 
+// AWS S3 Credentials
 const s3 = new S3Client({
   region: "eu-north-1",
   credentials: {
@@ -77,7 +78,6 @@ export const generateImageAction = internalAction({
   handler: async (ctx, args) => {
     if (args.text && args.numberOfSamples > 0) {
       try {
-        let path: string = `Prompt-images/${Date.now()}.png`;
         const res = await fetch(
           "https://modelslab.com/api/v6/realtime/text2img",
           {
@@ -102,13 +102,12 @@ export const generateImageAction = internalAction({
         );
 
         // Upload the image to aws s3 bucket
-
         if (res.ok) {
           const data = await res.json();
-          console.log("data.proxy_links", data.proxy_links)
-           console.log("data.proxy_links length", data.proxy_links.length)
+      
           let imageUrl: string;
           for (let i = 0; i < data.proxy_links.length; i++) {
+            let path: string = `Prompt-images/${Date.now()}.png`;
             imageUrl = data.proxy_links[i];
 
             const fetchImageURL = await fetch(imageUrl);
@@ -133,25 +132,36 @@ export const generateImageAction = internalAction({
               sketchId: args.sketchId,
               result: data.proxy_links,
             }
-          );
+          );  
 
-          // // // Update the user table with images generated;
+          /*
+          Update the user table with images.
+          Update the create date of the images
+          Update Api call Usage 
+          */;
+          const formmatedDate = format(new Date(Date.now()), "dd/MM/yy, HH:mm:ss")
+      
           await ctx.scheduler.runAfter(
             0,
             internal.createUser.updateUsersTable,
             {
               id: args.userTableId,
               images: data.proxy_links,
+              apiUsage: 1,
+              apiCallRemaining: 10,
+              apiUsageTimeStamp: formmatedDate,
+             
             }
           );
         } else {
-          console.log("response error in fetch");
+          throw new Error(" Response error in fetch");
         }
       } catch (err) {
         console.log("err", err);
+        throw new Error((err as { message: string }).message);
       }
     } else {
-      console.log("arguments needed");
+      throw new Error("Arguents needed ");
     }
   },
 });

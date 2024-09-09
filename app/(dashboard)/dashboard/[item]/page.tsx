@@ -1,10 +1,9 @@
 "use client";
 import React, { useContext } from "react";
 import { DataContext } from "@/app/Context/Provider";
-import Sidebar from "@/app/components/Dashboard/SideBar";
-import DashboardComponent from "@/app/components/Dashboard/Dashboard";
+
 import BillingComponent from "@/app/components/Dashboard/Billing";
-import SettingsComponent from "@/app/components/Dashboard/Settings";
+
 import RecentRequestsComponent from "@/app/components/Dashboard/RecentRequests";
 
 const DashBoardPage = () => {
@@ -16,8 +15,6 @@ const DashBoardPage = () => {
         return <BillingComponent />;
       case "Requests":
         return <RecentRequestsComponent />;
-      case "Settings":
-        return <SettingsComponent />;
     }
   };
 
