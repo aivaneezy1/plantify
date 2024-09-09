@@ -42,7 +42,7 @@ const PromptComponent = () => {
    const getUserData = useQuery(api.createUser.currentUser, {});
 
 
-  // const getImageData = useQuery(api.createSketch.getSketchData, {});
+   //const getImageData = useQuery(api.createSketch.getSketchData, {});
 
   // Getting data from local Storage
   useEffect(() => {
@@ -162,10 +162,8 @@ const PromptComponent = () => {
         {getImageData && getImageData.length > 0 ? (
           getImageData.map((data, index) => (
             <div key={index}>
-              <h2 className="text-3xl font-bold text-center mb-4">
-                {data.text}
-              </h2>
-              <div className="flex flex-wrap gap-6 justify-center">
+          
+              <div className="grid md:grid-cols-2 grid-cols-1 gap-5 justify-center">
                 {data.images.length > 0 &&
                   data.images.map((src, idx) => (
                     <div key={idx} className="relative mb-6">
@@ -174,9 +172,9 @@ const PromptComponent = () => {
                           <Image
                             src={src}
                             alt="Image"
-                            width={300}
-                            height={300}
-                            className="border border-gray-300 rounded-lg shadow-lg object-cover"
+                            width={600}
+                            height={600}
+                            className="border border-gray-300 rounded-lg shadow-lg object-cover transform transition hover:scale-105 duration-300 cursor-pointer"
                           />
                           <div className="flex flex-row justify-center items-center mt-2 gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer">
                             <div>
@@ -199,7 +197,7 @@ const PromptComponent = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex justify-center flex-col items-center text-white text-center mt-10">
+                        <div className="flex  flex-col items-center justify-center text-white text-center mt-10">
                           <Loading />
                           <h2>Loading...</h2>
                         </div>

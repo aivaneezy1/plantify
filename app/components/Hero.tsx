@@ -31,10 +31,13 @@ const Hero = () => {
   }, []);
   return (
     <div className="py-16 px-8 text-center flex flex-col justify-center items-center">
-      <h2 className="text-5xl font-bold text-purple-500 mb-4">Plantify Ai</h2>
-      <p className="text-2xl text-white mb-8">
-        Generate an Image through a text or sketch
+      <h2 className="text-6xl font-extrabold text-white mb-6 drop-shadow-md">
+        Pla<span className="text-green-500">nt</span>ify AI
+      </h2>
+      <p className="text-2xl text-gray-100 mb-10 max-w-2xl leading-relaxed">
+        Generate an Image through a text or sketch with the power of AI.
       </p>
+   
 
       <div className="mt-8 grid gap-4 md:grid-cols-4  grid-cols-3 ">
         {dataImages.length > 0 ? (
@@ -57,9 +60,8 @@ const Hero = () => {
         )}
       </div>
 
-
       {/*Hero images */}
-      <HeroImagesComponent/>
+      <HeroImagesComponent />
 
       {/* Frequently Asked Questions */}
       <FrequentQuestionComponent />

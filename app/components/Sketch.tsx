@@ -40,7 +40,8 @@ const SketchComponent = () => {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
 
   // table id store from local storage
-   const [getIdLocalStorage, setGetIdLocalStorage] = useState<Id<"users"> | null>(null); 
+  const [getIdLocalStorage, setGetIdLocalStorage] =
+    useState<Id<"users"> | null>(null);
 
   // Getting the user id of the user
   const { user } = useUser();
@@ -51,15 +52,15 @@ const SketchComponent = () => {
   const createSketch = useMutation(api.createImage.sketchImageTable);
 
   // Getting data from the table
-  const getAllImages = useQuery(api.createImage.getAllImage);
+  //const getAllImages = useQuery(api.createImage.getAllImage);
 
   // Getting the newly creating image
   const getImage = useQuery(api.createImage.getImage, {
     sketchId: sketchId || "",
   });
 
-    // getting data of the current user
-   const getUserData = useQuery(api.createUser.currentUser, {});
+  // getting data of the current user
+  const getUserData = useQuery(api.createUser.currentUser, {});
 
   const toggleEraser = () => {
     setIsErasing(!isErasing);
@@ -70,9 +71,14 @@ const SketchComponent = () => {
     canvasRef.current?.clearCanvas();
   };
 
-  const handleDownload = (imageUrl: string) => {
+  const handleDownload = async (imageUrl: string) => {
+    // Fetch the image as a Blob
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
-    link.href = imageUrl;
+    link.href = url;
     link.download = "sketch.png";
     link.click();
   };
@@ -84,7 +90,7 @@ const SketchComponent = () => {
     }
   }, [getImage]);
 
-     // Getting data from local Storage
+  // Getting data from local Storage
   useEffect(() => {
     const tableId = window.localStorage.getItem("tableId");
     if (tableId) {
@@ -149,10 +155,8 @@ const SketchComponent = () => {
     }
   };
 
-  
-
   return (
-    <div className="flex flex-col sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
+    <div className="flex flex-col justify-start sm:flex-row space-y-10 sm:space-y-0 sm:space-x-10 p-8 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 rounded-lg shadow-2xl">
       <div className="w-full sm:w-1/2 p-4 bg-[#434C5E]     rounded-lg">
         <form onSubmit={handleSubmitSketch} className="space-y-6">
           <div className="flex flex-col">
@@ -207,17 +211,18 @@ const SketchComponent = () => {
           </div>
 
           {getUserData?.apiCallRemaining && getUserData.apiCallRemaining > 0 ? (
-              <button
-            type="submit"
-            className=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full "
-          >
-            Generate
-          </button>
-          ): <AlertApiCallComponent style=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full"/>}
-        
+            <button
+              type="submit"
+              className=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full "
+            >
+              Generate
+            </button>
+          ) : (
+            <AlertApiCallComponent style=" bg-purple-500 hover:bg-purple-600 text-white py-4 px-8 rounded-lg mt-5 font-bold shadow-lg transition duration-200 w-full" />
+          )}
         </form>
       </div>
-      <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6   relative">
+      <div className="flex flex-col justify-center items-center w-full sm:w-1/2 space-y-6  relative   ">
         {loading ? (
           <div className="flex justify-center flex-col items-center text-white text-center">
             <Loading />
@@ -225,43 +230,40 @@ const SketchComponent = () => {
           </div>
         ) : getImage?.image && getImage.image.length > 0 ? (
           getImage.image.map((data, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col gap-4 items-center w-full  "
-            >
-              <div className="flex items-start  relative">
-                <h2 className="text-2xl font-bold text-left mb-5">
-                  {data.text}
-                </h2>
-              </div>
-              <div className=" ">
-                <Image
-                  src={data.image}
-                  alt={`Image ${idx}`}
-                  width={900}
-                  height={900}
-                  className="rounded-lg shadow-lg  o object-cover transition-transform transform hover:scale-105 duration-300"
-                />
-              </div>
-              <div className="flex flex-row justify-center items-center  gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer relative">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 640 512"
-                  className="w-6 h-6 text-white"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128l-368 0zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39L344 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 134.1-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z"
+            <>
+              <div
+                key={idx}
+                className="flex flex-col gap-4 justify-center items-center w-full relative "
+              >
+                <div>
+                  <Image
+                    src={data.image}
+                    alt={`Image ${idx}`}
+                    width={900}
+                    height={900}
+                    className="rounded-lg shadow-lg  o object-cover transition-transform transform hover:scale-105 duration-300"
                   />
-                </svg>
-                <button
-                  onClick={() => handleDownload(data.image)}
-                  className="text-white"
-                >
-                  Download
-                </button>
+                </div>
+                <div className="flex flex-row justify-center items-center  gap-2 bg-blue-500 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-600 cursor-pointer relative">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 640 512"
+                    className="w-6 h-6 text-white"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128l-368 0zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39L344 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 134.1-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z"
+                    />
+                  </svg>
+                  <button
+                    onClick={() => handleDownload(data.image)}
+                    className="text-white"
+                  >
+                    Download
+                  </button>
+                </div>
               </div>
-            </div>
+            </>
           ))
         ) : (
           <div className="flex justify-center flex-col items-center text-white text-center gap-2">

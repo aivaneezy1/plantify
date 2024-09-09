@@ -55,8 +55,8 @@ export const pay = action({
         },
         customer_email: clerkUser.email,
         mode: "payment",
-        success_url: `http://localhost:3000/dashboard?payment=true`,
-        cancel_url: `http://localhost:3000/dashboard?payment=false`,
+        success_url: `${redirectDomain}/dashboard?payment=true`,
+        cancel_url: `${redirectDomain}/dashboard?payment=false`,
       });
 
     

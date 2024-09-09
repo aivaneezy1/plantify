@@ -58,41 +58,39 @@ export const userTable = mutation({
 Update the user table with images., 
 Update the create date of the images
 Update Api call Usage by -5 everytime a API call use
-*/ 
+*/
 export const updateUsersTable = internalMutation({
   args: {
     id: v.id("users"),
     images: v.array(v.string()),
-    apiUsage:v.number(),
-    apiCallRemaining:v.number(),
+    apiUsage: v.number(),
+    apiCallRemaining: v.number(),
     apiUsageTimeStamp: v.string(),
   },
   handler: async (ctx, args) => {
     const userRecord = await ctx.db.get(args.id);
     // Check if the imagesUrl already exists, otherwise default to an empty array
 
-    console.log("userRecord",userRecord);
     const currentImages = userRecord?.imagesUrl || [];
 
     // Use the spread operator to add the new images to the existing array
     const updatedImages = [...currentImages, ...args.images];
 
     // Adding 1 on the api usage everytime a API call is made
-    const prevApiUsage = userRecord?.apiUsage || 0
-    const apiUsageTotal = prevApiUsage + args.apiUsage
+    const prevApiUsage = userRecord?.apiUsage || 0;
+    const apiUsageTotal = prevApiUsage + args.apiUsage;
 
     // Substracting by 10 on the API call remaining everytime a Api call is made
-    const prevTotalApiCall = userRecord?.apiCallRemaining || 0
-    const apiCallTotalRemaining = prevTotalApiCall - args.apiCallRemaining
+    const prevTotalApiCall = userRecord?.apiCallRemaining || 0;
+    const apiCallTotalRemaining = prevTotalApiCall - args.apiCallRemaining;
     // get the prev date
     const prevDate = userRecord?.apiUsageTimeStamp || [];
     const updatedDate = [args.apiUsageTimeStamp, ...prevDate];
     await ctx.db.patch(args.id, {
       imagesUrl: updatedImages,
       apiUsage: apiUsageTotal,
-      apiCallRemaining:apiCallTotalRemaining,
+      apiCallRemaining: apiCallTotalRemaining,
       apiUsageTimeStamp: updatedDate,
-    
     });
   },
 });
@@ -118,7 +116,7 @@ export const updateUserStatus = mutation({
     const totalApiRemaining: number = prevTotalApiCall + args.apiCallTotal;
     const timestamps = userRecord?.transactionsTimeStamp || [];
     const bits = userRecord?.bits || [];
-   
+
     await ctx.db.patch(args.userId, {
       status: args.status,
       apiCallTotal: prevTotalApiCall + args.apiCallTotal,
@@ -148,7 +146,6 @@ export const currentUser = query({
       .query("users")
       .withIndex("by_token", (q) => q.eq("tokenIdentifier", tokenSlice!))
       .unique();
-
 
     // Handle the case where no user is found
     if (!user) {
