@@ -5,13 +5,14 @@ import ProductComponent from "./Product";
 import { useUser } from "@clerk/nextjs";
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import { HamburgerMenuMobile } from "./Hamburger-Menu-Mobile";
 const Navbar = () => {
   const { isLoaded, isSignedIn, user } = useUser();
 
   return (
     <div className="text-white p-4 flex justify-between items-center shadow-md cursor-pointer font-medium sticky top-0 z-50 bg-gradient-to-r from-gray-700 to-gray-900 gap-5">
-      <div className=" flex  justify-center items-center mr-auto gap-5">
-      {/*Logo */}
+      <div className=" flex  justify-center items-center mr-auto  gap-5">
+        {/*Logo */}
         <Link href="/">
           <div className="flex flex-row justify-between items-center gap-2">
             <svg
@@ -30,17 +31,28 @@ const Navbar = () => {
             </h2>
           </div>
         </Link>
-        {/*Product Menu */}
-        <ProductComponent />
+
+        <div className="hidden md:flex">
+          {/*Product Menu for desktop*/}
+          <ProductComponent />
+        </div>
       </div>
 
-      {isSignedIn ? (
-        <Link href="/dashboard" className="hover:text-blue-500">
-          Dashboard
-        </Link>
-      ) : (
-        ""
-      )}
+      {/*Dashboard for Desktop */}
+      <div className="hidden md:flex">
+        {isSignedIn ? (
+          <Link href="/dashboard" className="hover:text-blue-500">
+            Dashboard
+          </Link>
+        ) : (
+          ""
+        )}
+      </div>
+
+      {/*Hambuger menu for mobile */}
+      <div className=" md:hidden">
+        {isSignedIn ? <HamburgerMenuMobile /> : ""}
+      </div>
 
       {/*User logged In */}
       {isSignedIn ? (
@@ -52,6 +64,8 @@ const Navbar = () => {
           </button>
         </Link>
       )}
+
+      {/*Mobile navigation Navbar */}
     </div>
   );
 };

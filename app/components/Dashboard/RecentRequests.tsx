@@ -42,8 +42,8 @@ const RecentRequestsComponent = () => {
   };
 
   return (
-    <div className="flex justify-center items-center text-2xl w-full mt-20 sm:ml-10">
-      <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5 shadow-lg w-full max-w-4xl">
+    <div className="flex justify-center items-center text-2xl w-full mt-20 sm:ml-10  ">
+      <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5 shadow-lg w-full max-w-4xl mx-5">
         <h2 className="text-3xl font-semibold mb-4">Recent Requests</h2>
         <hr className="my-4 border-white" />
         <div className="flex flex-col gap-8 w-full">

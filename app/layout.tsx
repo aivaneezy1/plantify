@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -8,7 +9,7 @@ import { ClerkProvider, ClerkLoading, ClerkLoaded } from "@clerk/nextjs";
 import Loading from "./utils/Loading";
 import { dark } from "@clerk/themes";
 import { CrispProvider } from "./components/Crisp-Provder";
-
+import Sidebar from "./components/Dashboard/SideBar";
 export const metadata = {
   title: {
     absolute: "",
@@ -46,7 +47,7 @@ export default function RootLayout({
           <ClerkLoaded>
             <DataContextProvider>
               <Navbar />
-
+             
               <ConvexClientProvider>{children}</ConvexClientProvider>
             </DataContextProvider>
           </ClerkLoaded>

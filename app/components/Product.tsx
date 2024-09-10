@@ -16,16 +16,21 @@ export default function ProductComponent() {
 
   return (
     <div>
+    {/*Desktop */}
       <div
         id="basic-button"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        className=" text-white py-2 px-4  hover:text-blue-500 transition duration-300"
+        className=" hidden md:flex text-white py-2 px-4  hover:text-blue-500 transition duration-300 "
       >
         Product✨
-      </div>
+      </div>  
+
+      
+
+
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -72,9 +77,11 @@ export default function ProductComponent() {
             </div>
             <div>Sketch to image Generation</div>
           </div>
-         
          </Link>
         </MenuItem>
+
+       
+
       </Menu>
     </div>
   );
