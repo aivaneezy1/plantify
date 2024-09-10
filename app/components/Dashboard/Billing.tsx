@@ -62,11 +62,11 @@ const BillingComponent = () => {
       {/*Container for both side   */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/*Left side dev */}
-        <div className="bg-[#434C5E] text-white p-8 rounded-lg max-h-[400px]  flex-grow-0">
+        <div className="bg-[#434C5E] text-white p-8 rounded-lg md:max-h-[400px] max-h-[5  00px] flex-grow-0 mx-5 my-2 ">
           <h2>Bits</h2>
           <hr className="my-4 border-white" />{" "}
           {/* Border at bottom of Credits */}
-          <h2 className="font-bold text-3xl">
+          <h2 className="font-bold text-3xl"> 
             {getUserData?.apiCallRemaining}
           </h2>
           <hr className="mt-4 border-white" /> {/* Border at bottom of 800 */}
@@ -99,7 +99,7 @@ const BillingComponent = () => {
         </div>
 
         {/*right side dev */}
-        <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5">
+        <div className="bg-[#434C5E] text-white p-8 rounded-lg mb-5 mx-5 ">
           <h2>Payments</h2>
           <hr className="my-4 border-white" />{" "}
           <div className="flex flex-row justify-between items-center ">

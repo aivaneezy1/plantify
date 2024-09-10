@@ -60,14 +60,14 @@ const DashboardComponent = () => {
                 alt={`${user?.firstName} profile`}
                 width={100}
                 height={100}
-                className="rounded-full"
+                className="rounded-full ml-3"
               />
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col justify-start items-start gap-2">
                 <h2 className="text-lg font-bold">{user?.fullName}</h2>
                 <h2 className="text-lg text-gray-400">
                   {user?.primaryEmailAddress?.emailAddress}
                 </h2>
-                <h2 className="bg-[#434C5E] p-1 rounded-lg">{user?.id}</h2>
+                <span className="text-sm bg-gray-500 p-1 rounded-lg">{user?.id}</span>
               </div>
             </div>
           </div>
