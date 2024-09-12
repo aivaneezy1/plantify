@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Plantify Platform
+Plantify Platform is a tool designed to help users generate images from prompts or sketches. The application allows users to create and download AI-generated images.
 
-## Getting Started
+## Features
+- **Plantify Prompts:** Users can create and download it.
+- **Search Functionality:** Easily generate an image based on a prompt text or sketch.
+- **Profile Management:** Users can view the images generated and download it
+- **User Authentication:** Secure sign-up and log-in features powered by Clerk to protect user data and access.
+-  **User Authentication:** Seamless payment processing with Stripe for purchasing additional image generation credits or premium features.
 
-First, run the development server:
+## Technologies Used
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Frontend
+- **Next.js:** A React framework for building server-side rendered applications and static websites.
+- **Typescript & React:** JavaScript is used with React to create dynamic and responsive UI components.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Backend
+- **Convex:** A powerful backend platform that offers a seamless and scalable solution for building and managing web applications. Convex provides a flexible framework for handling data, server-side logic, and real-time updates, making it easier to develop and maintain complex web applications
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Database
+- **Convex:** A NoSQL database that efficiently stores and manages user data, prompts, and search results.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Authentication
+- **Clerk:** A secure authentication solution for Next.js applications, handling sign-up, log-in, and session management.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Demo
+You can view a live demo of the AI Prompt Sharing Platform at the following link: https://www.plantifyai.com/
