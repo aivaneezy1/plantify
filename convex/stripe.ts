@@ -59,7 +59,6 @@ export const pay = action({
         cancel_url: `${redirectDomain}/dashboard?payment=false`,
       });
 
-    
     return {
       url: session.url,
       success: true,
@@ -74,12 +73,14 @@ type MetaData = {
 export const fulfill = internalAction({
   args: { signature: v.string(), payload: v.string() },
   handler: async (ctx, args) => {
+    console.log("key", process.env.NEXT_PUBLIC_STRIPE_PRIVATE_KEY);
+    console.log("key web", process.env.NEXT_PUBLIC_WEBHOOK_SIGNING_SERCRET);
     const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_PRIVATE_KEY!, {
       apiVersion: "2024-06-20",
     });
 
     const webHookSecret = process.env
-      .NEXT_PUBLIC_WEBHOOK_SIGNING_SERCRET_DEV as string;
+      .NEXT_PUBLIC_WEBHOOK_SIGNING_SERCRET as string;
 
     try {
       const event = await stripe.webhooks.constructEventAsync(
@@ -91,7 +92,6 @@ export const fulfill = internalAction({
         metadata: MetaData;
       };
       if (event.type === "checkout.session.completed") {
-  
         // Extract userId from metadata
         const userId = completedEvent.metadata.userId;
         // Extract the total amount converted in cents from metadata
@@ -116,7 +116,7 @@ export const fulfill = internalAction({
       return { success: true };
     } catch (err) {
       console.log(err);
-      return { success: false, error: (err as { messagge: string }).messagge };
+      return { success: false, error: (err as { message: string }).message };
     }
   },
 });
