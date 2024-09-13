@@ -21,10 +21,12 @@ export default function Home() {
   let id: string | undefined = user?.id || "";
   let image: string[] = [""];
 
+
+  console.log("user", user)
   useEffect(() => {
     const handleStoreUser = async () => {
       // User signing-up for the first time
-      if (isLoaded && isSignedIn && id && !hasStoredUser) {
+      if (isSignedIn && id && !hasStoredUser) {
         try {
           // First, check if the user already exists in the database
           const existingUser: Id<"users"> = await storeUser({
@@ -50,7 +52,7 @@ export default function Home() {
 
     handleStoreUser();
 
-  }, [isLoaded, isSignedIn, id, hasStoredUser, storeUser]);
+  }, [isSignedIn, id, hasStoredUser, storeUser]);
 
 
 
