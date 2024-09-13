@@ -12,7 +12,6 @@ export default function Home() {
   const storeUser = useMutation(api.createUser.userTable);
   const [hasStoredUser, setHasStoredUser] = useState<Boolean>(false);
   const { isLoaded, isSignedIn, user } = useUser();
-  const {getIdLocalStorage,setGetIdLocalStorage } = useContext(DataContext);
 
   let firstName: string | undefined = user?.firstName || "";
   let lastName: string | undefined = user?.lastName || "";
@@ -50,10 +49,10 @@ export default function Home() {
     };
 
     handleStoreUser();
-    
+
   }, [isLoaded, isSignedIn, id, hasStoredUser, storeUser]);
 
-   
+
 
   return (
     <div>
