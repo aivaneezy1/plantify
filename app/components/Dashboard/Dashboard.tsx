@@ -16,6 +16,7 @@ const DashboardComponent = () => {
   if (user?.imageUrl) {
     profileUrL = user.imageUrl;
   }
+
   const getUserData = useQuery(api.createUser.currentUser, {});
   const lastApiCallMade: string | undefined = getUserData?.apiUsageTimeStamp[0];
   const searchParams = useSearchParams();

@@ -17,11 +17,11 @@ import { useSearchParams } from 'next/navigation'
 const BillingComponent = () => {
   const [inputBits, setInputBits] = useState<string>("");
   const router = useRouter();
- 
+
   const getUserData = useQuery(api.createUser.currentUser, {});
 
-  
-  
+
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Allow only numeric values
@@ -53,7 +53,7 @@ const BillingComponent = () => {
 
     if (resultUrl.success) {
       router.push(resultUrl.url);
-    
+
     }
   };
 
@@ -66,7 +66,7 @@ const BillingComponent = () => {
           <h2>Bits</h2>
           <hr className="my-4 border-white" />{" "}
           {/* Border at bottom of Credits */}
-          <h2 className="font-bold text-3xl"> 
+          <h2 className="font-bold text-3xl">
             {getUserData?.apiCallRemaining}
           </h2>
           <hr className="mt-4 border-white" /> {/* Border at bottom of 800 */}
@@ -124,7 +124,7 @@ const BillingComponent = () => {
         </div>
       </div>
 
-  
+
     </div>
   );
 };

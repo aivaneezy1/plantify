@@ -19,7 +19,11 @@ export const userTable = mutation({
   },
   handler: async (ctx, args) => {
     // const get User Token
-
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("User is not signed");
+    }
+    console.log("server identity", identity);
     // check if user is already in our database
     const usersExist = await ctx.db
       .query("users")
